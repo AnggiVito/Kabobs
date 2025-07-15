@@ -28,6 +28,48 @@ const routes: RouteRecordRaw[] = [
       {path: '', component: () => import('pages/OrderPage.vue')},]
   },
 
+  {
+    path: '/FAQ',
+    component: () => import('layouts/NavbarLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/FAQPage.vue')},]
+  },
+
+  {
+    path: '/Karier',
+    component: () => import('layouts/NavbarLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/KarierPage.vue')},]
+  },
+
+  {
+    path: '/Lokasi',
+    component: () => import('layouts/NavbarLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/LokasiPage.vue')},]
+  },
+
+  {
+    path: '/Promo',
+    component: () => import('layouts/NavbarLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/PromoPage.vue')},]
+  },
+
+  {
+    path: '/ContactUs',
+    component: () => import('layouts/NavbarLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/ContactUsPage.vue')},]
+  },
+
+  {
+    path: '/AboutUs',
+    component: () => import('layouts/NavbarLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/TentangKamiPage.vue')},]
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

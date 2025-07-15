@@ -33,18 +33,7 @@
             <LihatSemuaButton label="Lihat Semua" route="/Menu" />
         </div>
 
-        <div class="download-app-section q-mt-xl">
-            <div>
-                <div class="download-teks">
-                    Makin Hemat & Praktis dengan Aplikasi<br />
-                    Order Kabobs. Download Sekarang!
-                </div>
-                <q-img src="/images/Barcode.png" class="download-kiri-img" />
-            </div>
-
-            <q-img src="/images/Aplikasi.png" class="download-kanan-img" />
-        </div>
-
+        <DownloadAppLayout />
         <div class="start-order-section row items-center q-mt-xl">
             <div class="col">
                 <div class="start-order-text text-h5 text-weight-bold">
@@ -187,19 +176,40 @@
             </div>
         </div>
 
+        <div class="instagram-gallery">
+            <div class="instagram-item" v-for="(post, i) in instagramPosts" :key="i">
+                <blockquote
+                class="instagram-media"
+                :data-instgrm-permalink="post"
+                data-instgrm-version="14"
+                style="background:#FFF; border:none; padding:0; margin:0; width:100%;"
+                ></blockquote>
+            </div>
+        </div>
 
         <OrderNowButton />
     </q-page>
+    <FooterLayout />
 </template>
 
 
 <script setup lang="ts">
     import { ref, onMounted } from 'vue'
+    import FooterLayout from 'layouts/FooterLayout.vue'
+    import DownloadAppLayout from 'layouts/DownloadAppLayout.vue'
+
 
     const isMenuHover = ref(false)
     const isPromoHover = ref(false)
     const isCaraOrderHover = ref(false)
     const isKebabMakerHover = ref(false)
+
+    const instagramPosts = [
+        'https://www.instagram.com/reel/DEWrojpS4v3/',
+        'https://www.instagram.com/reel/DL1z_LAyBs5/',
+        'https://www.instagram.com/reel/DKqr-wTyujk/',
+        'https://www.instagram.com/reel/DJtc1qgyWFf/'
+    ]
 
     const kStarsImages = [
         '/images/KStars1.png',
@@ -214,7 +224,6 @@
     let isCycling = false
 
     function restartCycle() {
-    // Jangan reset kalau sedang cycling
     if (isCycling) return
 
     isCycling = true
@@ -241,8 +250,7 @@
     onMounted(() => {
         const trackEl = scrollTrack.value
         if (!trackEl) return
-
-        // Gandakan isi track agar bisa looping terus
+        // Duplikasi konten untuk efek scroll
         const items = trackEl.innerHTML
         trackEl.innerHTML += items
 
@@ -250,7 +258,6 @@
         const speed = 1
 
         function animate() {
-            // Safety check tiap frame
             if (!scrollTrack.value) return
 
             pos -= speed
@@ -265,6 +272,11 @@
         }
 
         animate()
+
+        const igScript = document.createElement('script')
+        igScript.setAttribute('src', '//www.instagram.com/embed.js')
+        igScript.setAttribute('async', '')
+        document.body.appendChild(igScript)
     })
 
     import LihatSemuaButton from 'components/LihatSemuaButton.vue'
@@ -346,33 +358,6 @@
         height: 485px;
         border-radius: 12px;
         flex-shrink: 0;
-    }
-
-    /* Download App styles */
-    .download-app-section {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 32px;
-    }
-
-    .download-teks {
-        font-size: 40px;
-        line-height: 1.5;
-        font-weight: bold;
-    }
-
-    .download-kiri-img {
-        width: 250px;
-        height: auto;
-        margin-top: 16px;
-    }
-
-    .download-kanan-img {
-        width: 329px;
-        height: 420px;
-        object-fit: contain;
-        border-radius: 12px;
     }
 
     /* Start Order styles */
@@ -738,6 +723,20 @@
 
     .social-icons img {
         height: 100%;
+    }
+
+    /* Instagram section styles */
+    .instagram-gallery {
+        display: flex;
+        gap: 11px;
+        flex-wrap: nowrap;
+        width: 1320px;
+        margin-top: 50px;
+    }
+
+    .instagram-item {
+        max-width: 320px;
+        flex: 0 0 auto;
     }
 
 </style>

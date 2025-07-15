@@ -3,66 +3,115 @@
     <!-- Navbar -->
     <q-header elevated class="bg-white text-black">
       <q-toolbar class="toolbar-custom">
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          class="q-visible-xs"
+          @click="drawer = !drawer"
+        />
         <div class="row items-center q-gutter-lg">
-          <q-img src="/images/LogoKabobs.png" style="width: 80px; " />
+          <a href="/" class="q-visible-xs q-ml-auto">
+            <q-img src="/images/LogoKabobs.png" style="width: 80px; " />
+          </a>
 
           <!-- Dropdown Menu: Menu -->
-          <div class="nav-hover">
-            Menu
-            <q-icon name="expand_more" size="20px" class="q-ml-xs" />
-            <q-menu transition-show="jump-down" transition-hide="jump-up">
-              <div class="row no-wrap q-pa-md items-start" style="min-width: 550px">
-                <q-list class="col-8">
-                  <div class="row">
-                    <div class="col">
-                      <div class="dropdown-item">Seasonal Menu</div>
-                      <div class="dropdown-item">Semua Menu</div>
-                      <div class="dropdown-item">Drinks</div>
-                      <div class="dropdown-item">Snack</div>
-                      <div class="dropdown-item highlight">Lihat Semua Menu ›</div>
-                    </div>
+          <div class="row items-center q-gutter-lg q-hidden-xs">
+            <div class="nav-hover"
+              @mouseenter="menuDropdown = true"
+              @mouseleave="menuDropdown = false">
+              Menu
+                <q-icon name="expand_more" size="20px" class="q-ml-xs" />
+                <q-menu v-model="menuDropdown" anchor="bottom left" self="top left" @mouseenter="openMenuDropdown" @mouseleave="closeMenuDropdown">
+                <div class="row no-wrap q-pa-md items-start" style="min-width: 550px">
+                  <q-list class="col-8">
+                    <div class="row">
+                      <div class="col">
+                        <div class="dropdown-item">Seasonal Menu</div>
+                        <div class="dropdown-item">Semua Menu</div>
+                        <div class="dropdown-item">Drinks</div>
+                        <div class="dropdown-item">Snack</div>
+                        <div class="dropdown-item highlight">Lihat Semua Menu›</div>
+                      </div>
 
-                    <div class="col">
-                      <div class="dropdown-item">Funbox</div>
-                      <div class="dropdown-item">Paket Combo Seru</div>
-                      <div class="dropdown-item">Paket Funbox Seru</div>
+                      <div class="col">
+                        <div class="dropdown-item">Funbox</div>
+                        <div class="dropdown-item">Paket Combo Seru</div>
+                        <div class="dropdown-item">Paket Funbox Seru</div>
+                      </div>
                     </div>
+                  </q-list>
+
+                  <div class="col-4 q-ml-md flex flex-center" style="min-height: 200px;">
+                    <q-img
+                      :src="menuImages[currentImage]"
+                      style="width: 150px; height: 150px; border-radius: 8px;"
+                    />
                   </div>
-                </q-list>
-
-                <div class="col-4 q-ml-md flex flex-center" style="min-height: 200px;">
-                  <q-img
-                    :src="menuImages[currentImage]"
-                    style="width: 150px; height: 150px; border-radius: 8px;"
-                  />
                 </div>
-              </div>
-            </q-menu>
+              </q-menu>
+            </div>
+
+
+            <div class="nav-hover" @click="goToPromo">Promo</div>
+
+            <div class="nav-hover"
+            @mouseenter="tentangDropdown = true"
+            @mouseleave="tentangDropdown = false"
+            @click="goToAboutUs">
+              Tentang Kabobs
+              <q-icon name="expand_more" size="20px" class="q-ml-xs" />
+              <q-menu v-model="tentangDropdown" anchor="bottom left" self="top left" @mouseenter="openTentangDropdown" @mouseleave="closeTentangDropdown">
+                <q-list style="min-width: 240px">
+                  <div class="dropdown-item" @click="goToLokasi">Lokasi</div>
+                  <div class="dropdown-item" @click="goToKarier">Karir</div>
+                  <div class="dropdown-item" @click="goToFAQ">FAQ</div>
+                </q-list>
+              </q-menu>
+            </div>
+
+            <div class="nav-hover" @click="goToContactUs">Contact Us</div>
           </div>
-
-
-          <div class="nav-hover">Promo</div>
-
-          <div class="nav-hover">
-            Tentang Kabobs
-            <q-icon name="expand_more" size="20px" class="q-ml-xs" />
-            <q-menu transition-show="jump-down" transition-hide="jump-up">
-              <q-list style="min-width: 240px">
-                <div class="dropdown-item">Tentang Kami</div>
-                <div class="dropdown-item">Karir</div>
-                <div class="dropdown-item">FAQ</div>
-              </q-list>
-            </q-menu>
-          </div>
-
-          <div class="nav-hover">Contact Us</div>
         </div>
-
         <!-- Beli Online -->
-        <BeliButton />
+        <BeliButton class="q-hidden-xs"/>
 
       </q-toolbar>
     </q-header>
+
+    <q-drawer v-model="drawer" side="left" class="bg-white" bordered>
+      <q-list>
+        <!-- MENU -->
+        <q-expansion-item label="Menu" expand-separator>
+          <q-item clickable><q-item-section>Seasonal Menu</q-item-section></q-item>
+          <q-item clickable><q-item-section>Semua Menu</q-item-section></q-item>
+          <q-item clickable><q-item-section>Drinks</q-item-section></q-item>
+          <q-item clickable><q-item-section>Snack</q-item-section></q-item>
+          <q-item clickable><q-item-section>Funbox</q-item-section></q-item>
+          <q-item clickable><q-item-section>Paket Combo Seru</q-item-section></q-item>
+          <q-item clickable><q-item-section>Paket Funbox Seru</q-item-section></q-item>
+        </q-expansion-item>
+
+        <!-- PROMO -->
+        <q-item clickable @click="goToPromo">
+          <q-item-section>Promo</q-item-section>
+        </q-item>
+
+        <!-- TENTANG KABOBS -->
+        <q-expansion-item label="Tentang Kabobs" expand-separator>
+          <q-item clickable @click="goToAboutUs"><q-item-section>Tentang Kami</q-item-section></q-item>
+          <q-item clickable @click="goToLokasi"><q-item-section>Lokasi</q-item-section></q-item>
+          <q-item clickable @click="goToKarier"><q-item-section>Karier</q-item-section></q-item>
+          <q-item clickable @click="goToFAQ"><q-item-section>FAQ</q-item-section></q-item>
+        </q-expansion-item>
+
+        <!-- CONTACT -->
+        <q-item clickable @click="goToContactUs">
+          <q-item-section>Contact Us</q-item-section>
+        </q-item>
+      </q-list>
+    </q-drawer>
 
     <!-- Content -->
     <q-page-container>
@@ -74,6 +123,53 @@
 <script setup lang="ts">
   import BeliButton from 'components/BeliButton.vue'
   import { ref, onMounted, onBeforeUnmount } from 'vue'
+  import { useRouter } from 'vue-router'
+  const router = useRouter()
+  const menuDropdown = ref(false)
+  const drawer = ref(false)
+  const tentangDropdown = ref(false)
+  let menuTimeout: ReturnType<typeof setTimeout>
+  let tentangTimeout: ReturnType<typeof setTimeout>
+
+  function openMenuDropdown() {
+    clearTimeout(menuTimeout)
+    menuDropdown.value = true
+  }
+  function closeMenuDropdown() {
+    menuTimeout = setTimeout(() => (menuDropdown.value = false), 200)
+  }
+
+  function openTentangDropdown() {
+    clearTimeout(tentangTimeout)
+    tentangDropdown.value = true
+  }
+  function closeTentangDropdown() {
+    tentangTimeout = setTimeout(() => (tentangDropdown.value = false), 200)
+  }
+
+  function goToFAQ() {
+    void router.push({ path: '/FAQ' })
+  }
+
+  function goToAboutUs() {
+    void router.push({ path: '/AboutUs' })
+  }
+
+  function goToKarier() {
+    void router.push({ path: '/Karier' })
+  }
+
+  function goToLokasi() {
+    void router.push({ path: '/Lokasi' })
+  }
+
+  function goToPromo() {
+    void router.push({ path: '/Promo' })
+  }
+
+  const goToContactUs = () => {
+    void router.push({ path: '/ContactUs' })
+  }
 
   const menuImages = [
     '/images/Thumbnail1.png',
@@ -97,6 +193,18 @@
 </script>
 
 <style scoped>
+  @media (min-width: 601px) {
+    .q-btn.q-visible-xs {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .q-hidden-xs {
+      display: none !important;
+    }
+  }
+
   .toolbar-custom {
     max-width: 1400px;
     margin: 0 auto;
@@ -164,5 +272,4 @@
     padding-right: 5px;
   }
 
-  
 </style>

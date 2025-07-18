@@ -18,7 +18,7 @@
 
           <!-- Dropdown Menu: Menu -->
           <div class="row items-center q-gutter-lg q-hidden-xs">
-            <div class="nav-hover"
+            <div class="nav-hover" @click="goToMenu"
               @mouseenter="menuDropdown = true"
               @mouseleave="menuDropdown = false">
               Menu
@@ -85,7 +85,7 @@
         <!-- MENU -->
         <q-expansion-item label="Menu" expand-separator>
           <q-item clickable><q-item-section>Seasonal Menu</q-item-section></q-item>
-          <q-item clickable><q-item-section>Semua Menu</q-item-section></q-item>
+          <q-item clickable @click="goToMenu"><q-item-section>Semua Menu</q-item-section></q-item>
           <q-item clickable><q-item-section>Drinks</q-item-section></q-item>
           <q-item clickable><q-item-section>Snack</q-item-section></q-item>
           <q-item clickable><q-item-section>Funbox</q-item-section></q-item>
@@ -112,8 +112,6 @@
         </q-item>
       </q-list>
     </q-drawer>
-
-    <!-- Content -->
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -147,6 +145,10 @@
     tentangTimeout = setTimeout(() => (tentangDropdown.value = false), 200)
   }
 
+  function goToMenu() {
+    void router.push({ path: '/Menu' })
+  }
+
   function goToFAQ() {
     void router.push({ path: '/FAQ' })
   }
@@ -167,7 +169,7 @@
     void router.push({ path: '/Promo' })
   }
 
-  const goToContactUs = () => {
+  function goToContactUs () {
     void router.push({ path: '/ContactUs' })
   }
 

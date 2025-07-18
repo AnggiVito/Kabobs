@@ -34,4 +34,17 @@
     background-color: #CD2F29;
     color: white;
     }
+
+    @media (max-width: 768px) {
+        .lihat-semua-btn {
+            width: 150px;
+            height: 40px;
+            font-size: 14px;
+        }
+
+        .lihat-semua-btn:hover {
+            background-color: #CD2F29;
+            color: white;
+        }
+    }
 </style>

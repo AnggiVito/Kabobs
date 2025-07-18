@@ -16,10 +16,8 @@
                 expand-icon="add"
                 expanded-icon="remove"
             >
-                <!-- Garis pemisah di bawah pertanyaan -->
                 <div class="divider-line"></div>
 
-                <!-- Jawaban -->
                 <div v-html="faq.answer" class="q-pa-sm text-body2 text-grey-8"></div>
             </q-expansion-item>
         </div>
@@ -107,5 +105,15 @@
         margin: 0 0 8px 0;
     }
 
-    
+    @media (max-width: 768px) {
+        h2 {
+            color: #000000;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .faq-box {
+            width: 100%;
+        }
+    }
 </style>

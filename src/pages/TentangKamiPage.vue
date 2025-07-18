@@ -11,7 +11,7 @@
                                 <div class="text-subtitle2">100+</div>
                                 <q-img class="stonks-icon" src="/icons/Stonks.png" />
                             </div>
-                            <div class="text-caption q-mt-xs">
+                            <div class="text-caption1 q-mt-xs">
                                 Saat ini mengoperasikan 100 lebih toko dan akan bertambah lagi di masa mendatang.
                             </div>
                         </q-card-section>
@@ -37,8 +37,7 @@
                         <div class="card-bottom-line" />
                     </q-card>
 
-                    <!-- Sosmed1 digeser ke kanan dari tengah Sosmed2 -->
-                    <q-img src="/images/Sosmed1.png" class="img-utama img-sosmed1" />
+                    <q-img src="/images/Sosmed1.png" class="img-sosmed1" />
                 </div>
             </div>
 
@@ -64,12 +63,9 @@
 </script>
 
 <style scoped>
-
     .q-page {
         max-width: 1400px;
         margin: 0 auto;
-        padding-left: 60px;
-        padding-right: 60px;
     }
 
     .tentang-kami-section {
@@ -134,6 +130,12 @@
         object-fit: cover;
     }
 
+    .img-sosmed1 {
+        width: 360px;
+        height: 360px;
+        border-radius: 12px;
+        object-fit: cover;
+    }
 
     /* Kolom Kanan */
     .text-wrapper {
@@ -148,6 +150,13 @@
     .text-caption {
         color: grey;
         margin-top: 15px;
+        font-size: 14px;
+    }
+
+    .text-caption1{
+        color: grey;
+        margin-top: 15px;
+        font-size: 14px;
     }
 
     .card-bottom-line {
@@ -174,6 +183,83 @@
         font-size: 18px;
         color: #000;
         line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+        .tentang-kami-section {
+            margin-left: -110px;
+            padding: 10px;
+        }
+
+        .text-subtitle2{
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .text-caption {
+            display: none;
+        }
+
+        .text-caption1 {
+            font-size: 11px;
+        }
+
+        .tentang-kami-section {
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .text-wrapper {
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 120px;
+        }
+
+        .text-judul {
+            font-size: 28px;
+        }
+
+        .text-body {
+            font-size: 16px;
+        }
+
+        .img-utama {
+            width: 208px;
+            height: 351px;
+            margin-left: -50px;
+        }
+
+        .card1{
+            width: 120px;
+            height: 190px;
+            margin-right: 30px;
+        }
+
+        .card2 {
+            width: 105px;
+            height: 200px;
+        }
+
+        .img-sosmed1 {
+            width: 200px;
+            height: 350px;
+        }
+
+        .emoji-inline {
+            display: contents;
+            gap: 6px;
+            font-size: 18px;
+            align-items: center;
+        }
+
+        .big-emoji {
+            font-size: 30px;
+        }
     }
 
 </style>

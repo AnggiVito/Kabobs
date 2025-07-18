@@ -4,10 +4,10 @@ const routes: RouteRecordRaw[] = [
   // Redirect from root to home page
   {
     path: '/',
-    redirect: '/kabobs.id',
+    redirect: '/Kabobs.id',
   },
   {
-    path: '/kabobs.id',
+    path: '/Kabobs.id',
     component: () => import('layouts/NavbarLayout.vue'),
     children: [
       { path: '', component: () => import('pages/HomePage.vue') },
@@ -15,14 +15,14 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/menu',
+    path: '/Menu',
     component: () => import('layouts/NavbarLayout.vue'), 
     children: [
       {path: '', component: () => import('pages/MenuPage.vue')},]
   },
 
   {
-    path: '/order-now',
+    path: '/Order-now',
     component: () => import('layouts/NavbarLayout.vue'), 
     children: [
       {path: '', component: () => import('pages/OrderPage.vue')},]

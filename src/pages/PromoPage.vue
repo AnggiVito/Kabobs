@@ -6,8 +6,7 @@
             <div
                 v-for="(promo, index) in promos"
                 :key="index"
-                class="col-12 col-md-6"
-            >
+                class="col-xs-6 col-sm-6 col-md-6" >
                 <q-card class="q-pa-none shadow-2">
                     <div class="promo-image-wrapper">
                         <q-img :src="promo.image" class="promo-image" />
@@ -30,7 +29,7 @@
                                 <q-img
                                 :src="platform.logo"
                                 style="width: 24px; height: 24px"
-                            />
+                                />
                                 <span class="text-caption">{{ platform.text }}</span>
                             </div>
                         </div>
@@ -114,5 +113,37 @@
         height: auto;
         border-radius: 12px;
         object-fit: cover;
+    }
+
+    @media (max-width: 767px) {
+        .promo-container {
+            padding: 20px 15px;
+        }
+        .row.q-col-gutter-xl.q-row-gutter-xl {
+            margin-left: -10px;
+            margin-right: -10px;
+            margin-top: -10px;
+        }
+        .row.q-col-gutter-xl.q-row-gutter-xl > div {
+            padding-left: 10px;
+            padding-top: 10px;
+        }
+        .text-h4 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .q-card .text-h6 {
+            font-size: 18px;
+        }
+        .q-card .text-body2 {
+            font-size: 14px;
+        }
+        .q-card .text-caption {
+            font-size: 12px;
+        }
+        .q-img[style="width: 24px; height: 24px;"] {
+            width: 20px !important;
+            height: 20px !important;
+        }
     }
 </style>

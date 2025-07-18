@@ -29,4 +29,13 @@
         background-color: #cd2f29;
         color: white;
     }
+
+    @media (max-width: 768px) {
+        .order-now-fixed {
+            width: 100px;
+            height: 35px;
+            font-size: 11px;
+        }
+        
+    }
 </style>

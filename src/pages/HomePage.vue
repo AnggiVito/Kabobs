@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="lihat-semua-wrapper q-mt-lg">
-            <LihatSemuaButton label="Lihat Semua" route="/Menu" />
+            <LihatSemuaButton label="Lihat Semua" route="/Promo" />
         </div>
 
         <DownloadAppLayout />
@@ -187,7 +187,6 @@
             </div>
         </div>
 
-        <OrderNowButton />
     </q-page>
     <FooterLayout />
 </template>
@@ -280,7 +279,6 @@
     })
 
     import LihatSemuaButton from 'components/LihatSemuaButton.vue'
-    import OrderNowButton from 'components/OrderNowButton.vue'
 </script>
 
 <style scoped>
@@ -292,8 +290,6 @@
     .q-page {
         max-width: 1400px;
         margin: 0 auto;
-        padding-left: 60px;
-        padding-right: 60px;
     }
 
     h1 {
@@ -737,6 +733,189 @@
     .instagram-item {
         max-width: 320px;
         flex: 0 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        .q-page {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .text-h5{
+            font-size: 24px;
+            margin-top: -20px;
+        }
+
+        .scroll-container {
+            gap: 10px;
+        }
+
+        .menu-card {
+            width: 118px;
+            height: 118px;
+        }
+
+        .penawaran-wrapper {
+            gap: 10px;
+        }
+
+        .penawaran-fixed {
+            width: 154px;
+            height: 170px;
+        }
+
+        .penawaran-scroll-container {
+            gap: 10px;
+        }
+
+        .penawaran-card {
+            width: 290px;
+            height: 170px;
+        }
+
+        .start-order-text {
+            font-size: 14px;
+        }
+
+        .start-order-button {
+            width: 120px;
+            height: 40px;
+            font-size: 12px;
+        }
+
+        .lihat-semua-wrapper {
+            margin-bottom: -50px;
+        }
+
+        /* Menu Kiri mobile Styles */
+        .menu-kiri,
+        .outlet-kanan {
+            width: 190px;
+            height: 190px;
+            flex-shrink: 0;
+        }
+
+        .lihat-text {
+            font-size: 10px;
+        }
+
+        .menu-text {
+            font-size: 30px;
+        }
+
+        /* Outlet kanan mobile styles */
+        .outlet-teks {
+            font-size: 20px;
+            line-height: 20px;
+        }
+
+        .text-h4{
+            font-size: 12px;
+            line-height: 20px;
+        }
+
+        .content-gambar {
+            max-width: 380px;
+        }
+
+        .cara-order-kiri {
+            width: 127px;
+            height: 127px;
+        }
+
+        .teks-kiri-atas {
+            top: 0px;
+            left: 5px;
+            font-size: 20px;
+            transform: translateX(-30px);
+        }
+
+        .teks-kanan-bawah {
+            bottom: 0px;
+            right: 5px;
+            font-size: 20px;
+        }
+
+        /* Kebab Maker mobile styles */
+        .kebab-maker {
+            width: 166px;
+            height: 127px;
+        }
+
+        .zoom-base-img {
+            width: 127px;
+            height: 127px;
+        }
+
+        .zoom-center-icon {
+            width: 85px;
+            height: 56px;
+            margin-left: -35px;
+        }
+
+        /* K-Stars mobile styles */
+        .k-stars {
+            width: 127px;
+            height: 127px;
+        }
+
+        .k-stars-img {
+            width: 127px;
+            height: 127px;
+        }
+
+        .k-stars-overlay-img {
+            width: 100px;
+            height: auto;
+        }
+
+        /* Auto Scroll Gallery mobile styles */
+        .auto-scroll-gallery { 
+            width: 601px;
+            height: 149px;
+            margin-left: calc(-28vw);
+            margin-top: 10px;
+        }
+
+        .gallery-item {
+            width: 150px;
+            height: 150px;
+        }
+
+        .overlay-text {
+            font-size: 30px;
+        }
+
+        .social-icons {
+            gap: 30px;
+        }
+
+        .social-icons img {
+            height: 50px;
+        }
+
+        /* Instagram section mobile styles */
+        .instagram-gallery {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            width: 100%;
+            max-width: 380px;
+            gap: 20px;
+            height: auto;
+            margin: 50px auto 0 auto;
+        }
+
+        .instagram-item {
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            flex: 0 0 auto;
+        }
+        .instagram-item blockquote {
+            max-width: 100% !important;
+            box-sizing: border-box;
+        }
     }
 
 </style>

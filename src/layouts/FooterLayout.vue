@@ -14,18 +14,18 @@
 
                 <!-- Navigasi -->
                 <div class="col-6 col-md-2">
-                    <div class="footer-link">Tentang Kami</div>
-                    <div class="footer-link">Lokasi</div>
-                    <div class="footer-link">Karier</div>
-                    <div class="footer-link">FAQ</div>
-                    <div class="footer-link">Hubungi Kami</div>
+                    <a href="/AboutUs"><div class="footer-link">Tentang Kami</div></a>
+                    <a href="/Lokasi"><div class="footer-link">Lokasi</div></a>
+                    <a href="/Karier"><div class="footer-link">Karier</div></a>
+                    <a href="/FAQ"><div class="footer-link">FAQ</div></a>
+                    <a href="/ContactUs"><div class="footer-link">Hubungi Kami</div></a>
                 </div>
 
                 <!-- Sosial Media -->
                 <div class="col-6 col-md-2">
-                    <div class="footer-link">Instagram</div>
-                    <div class="footer-link">Tiktok</div>
-                    <div class="footer-link">Facebook</div>
+                    <a href="https://www.instagram.com/kabobs.id/" target="_blank" rel="noopener"><div class="footer-link">Instagram</div></a>
+                    <a href="https://www.tiktok.com/@kabobs.id" target="_blank" rel="noopener"><div class="footer-link">Tiktok</div></a>
+                    <a href="https://www.facebook.com/kabobs.id" target="_blank" rel="noopener"><div class="footer-link">Facebook</div></a>
                 </div>
 
                 <!-- Kolom 4: Alamat + Sign Up -->
@@ -121,6 +121,9 @@
         }
     }
 
+    a {
+        text-decoration: none;
+    }
 
     .footer-divider {
         width: 100%;

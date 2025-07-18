@@ -195,7 +195,7 @@
             !lastName.trim() ||
             !email.trim() ||
             !phone.trim() ||
-            !category.trim?.() ||  // optional chaining untuk jaga-jaga
+            !category.trim?.() ||
             !message.trim()
         ) {
             $q.notify({
@@ -220,7 +220,7 @@
 
     .main-card {
         max-width: 1200px;
-        max-height: 1000px;
+        max-height: auto;
         margin: 0 auto;
         border-radius: 10px;
         box-shadow: 0 20px 20px rgba(0, 0, 0, 0.1);
@@ -389,6 +389,14 @@
     .fade-slide-leave-to {
         opacity: 0;
         transform: translateY(-30px);
+    }
+
+    @media screen and (max-width: 768px) {
+        .after {
+            width: 200px;
+            height: auto;
+            margin-top: -80px;
+        }
     }
 
 </style>

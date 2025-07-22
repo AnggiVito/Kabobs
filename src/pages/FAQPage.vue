@@ -7,8 +7,21 @@
             </p>
         </div>
         <div class="container">
+            <div v-if="faqStore.isLoading" class="text-center q-pa-lg">
+                <q-spinner-hourglass color="primary" size="3em" />
+                <div class="q-mt-md">Memuat FAQ...</div>
+            </div>
+
+            <div v-else-if="faqStore.error" class="text-center q-pa-lg text-negative">
+                Error: {{ faqStore.error }}
+            </div>
+
+            <div v-else-if="faqStore.faqs.length === 0" class="text-center q-pa-lg">
+                Tidak ada FAQ yang tersedia saat ini.
+            </div>
+
             <q-expansion-item
-                v-for="(faq, index) in faqs"
+                v-for="(faq, index) in faqStore.faqs"
                 :key="index"
                 :label="faq.question"
                 expand-separator
@@ -17,7 +30,6 @@
                 expanded-icon="remove"
             >
                 <div class="divider-line"></div>
-
                 <div v-html="faq.answer" class="q-pa-sm text-body2 text-grey-8"></div>
             </q-expansion-item>
         </div>
@@ -27,41 +39,16 @@
 
 
 <script setup lang="ts">
-    import FooterLayout from 'layouts/FooterLayout.vue'
-    const faqs = [
-        {
-            question: 'Di mana saya dapat menemukan gerai KABOBS?',
-            answer: 'Untuk mengetahui lokasi outlet kami, bisa dilihat pada link berikut <a href="https://kabobs.id/location" target="_blank">https://kabobs.id/location</a>'
-        },
-        {
-            question: 'Promo apa saja yang terdapat di KABOBS saat ini?',
-            answer: 'Silakan cek halaman Promo kami untuk informasi terbaru.'
-        },
-        {
-            question: 'Jenis pembayaran apa saja yang diterima di outlet KABOBS?',
-            answer: 'Kami menerima pembayaran tunai, e-wallet, dan kartu debit.'
-        },
-        {
-            question: 'Apakah di outlet KABOBS bisa menerima sistem pembayaran dengan credit card?',
-            answer: 'Ya, beberapa outlet mendukung pembayaran dengan credit card.'
-        },
-        {
-            question: 'Saya akan melakukan pemesanan dalam jumlah banyak. Kemana saya dapat melakukan pemesanan?',
-            answer: 'Silakan hubungi layanan pemesanan kami di email/WA resmi.'
-        },
-        {
-            question: 'Saldo saya terpotong dua kali saat pembayaran di outlet KABOBS. Kemana saya bisa mengajukan komplain?',
-            answer: 'Anda bisa menghubungi layanan customer care kami melalui email atau WhatsApp.'
-        },
-        {
-            question: 'Apakah KABOBS menerima sistem franchise min?',
-            answer: 'Untuk saat ini belum tersedia sistem franchise.'
-        },
-        {
-            question: 'Halo min! Bagaimana cara melamar pekerjaan ke KABOBS?',
-            answer: 'Silakan buka halaman karier kami atau kirimkan CV ke email resmi kami.'
-        }
-    ];
+    import { onMounted } from 'vue';
+    import FooterLayout from 'layouts/FooterLayout.vue';
+    import { useFaqStore } from 'src/stores/FAQStore';
+    import { QSpinnerHourglass } from 'quasar';
+
+    const faqStore = useFaqStore();
+
+    onMounted(() => {
+        void faqStore.fetchFaqs();
+    });
 </script>
 
 <style scoped>

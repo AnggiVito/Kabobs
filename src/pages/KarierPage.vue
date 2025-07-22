@@ -26,29 +26,32 @@
         <div class="search-filter-bar q-mt-lg row q-gutter-md">
             <q-select
                 outlined
-                v-model="lokasiFilter"
-                :options="lokasiOptions"
+                :model-value="karierStore.lokasiFilter"
+                @update:model-value="karierStore.setLokasiFilter"
+                :options="karierStore.lokasiOptions"
                 label="Semua Lokasi"
                 dense
                 class="filter-select"
             />
             <q-select
                 outlined
-                v-model="posisiFilter"
-                :options="posisiOptions"
+                :model-value="karierStore.posisiFilter"
+                @update:model-value="karierStore.setPosisiFilter"
+                :options="karierStore.posisiOptions"
                 label="Semua Posisi"
                 dense
                 class="filter-select"
             />
             <q-input
                 outlined
-                v-model="keywordSearch"
+                :model-value="karierStore.keywordSearch"
+                @update:model-value="karierStore.setKeywordSearch"
                 placeholder="Cari"
                 dense
                 class="filter-search-input"
             >
                 <template v-slot:append>
-                <q-icon name="search" />
+                    <q-icon name="search" />
                 </template>
             </q-input>
         </div>
@@ -71,7 +74,7 @@
             </div>
 
             <q-card
-                v-for="(posisi, index) in filteredPosisi"
+                v-for="(posisi, index) in karierStore.filteredPosisi"
                 :key="index"
                 class="posisi-card q-mb-md"
             >
@@ -99,8 +102,8 @@
                     </div>
                 </q-card-section>
             </q-card>
-            
-            <div v-if="filteredPosisi.length === 0" class="text-center q-mt-lg text-grey-7">
+
+            <div v-if="karierStore.filteredPosisi.length === 0" class="text-center q-mt-lg text-grey-7">
                 Tidak ada posisi yang ditemukan sesuai kriteria pencarian.
             </div>
         </div>
@@ -108,45 +111,9 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, computed } from 'vue';
+    import { useKarierStore } from 'src/stores/KarierStore';
 
-    const lokasiFilter = ref('Semua Lokasi');
-    const posisiFilter = ref('Semua Posisi');
-    const keywordSearch = ref('');
-
-    const lokasiOptions = ['Semua Lokasi', 'Kabobs Kaliurang', 'Kota Bandung', 'Jakarta Pusat', 'Kota Semarang', 'Jakarta Selatan'];
-    const posisiOptions = ['Semua Posisi', 'Crew', 'Staff', 'Leader', 'Supervisor', 'Manajer', 'Marketing Executive', 'Tax'];
-
-    interface Posisi {
-        nama: string;
-        jenis: string;
-        lokasi: string;
-        keahlian: string;
-    }
-
-    const allPosisi: Posisi[] = [
-        { nama: 'Crew Outlet Yogyakarta', jenis: 'Crew', lokasi: 'Kabobs Kaliurang', keahlian: 'Pengalaman di bidang F&B 1 tahun' },
-        { nama: 'Leader Produksi Makanan', jenis: 'Leader', lokasi: 'Kota Bandung', keahlian: 'Pengalaman di bidang F&B 1 tahun, Target oriented, Leadership' },
-        { nama: 'Crew Kota Semarang', jenis: 'Crew', lokasi: 'Paragon Mall', keahlian: 'Pengalaman di bidang F&B 1 tahun' },
-        { nama: 'Tax Staff', jenis: 'Staff', lokasi: 'Kota Bandung', keahlian: 'Pengalaman sejenis 1-2 tahun Menguasai e-SPT, e-Bupot, E-Filling, e-Form' },
-        { nama: 'Store Manager Jakarta', jenis: 'Manajer', lokasi: 'Jakarta Pusat', keahlian: 'Pengalaman manajerial F&B 2 tahun, Leadership, Analitis' },
-        { nama: 'Supervisor Outlet Bandung', jenis: 'Supervisor', lokasi: 'Kota Bandung', keahlian: 'Pengalaman F&B 1 tahun, Leadership' },
-        { nama: 'Marketing Executive', jenis: 'Staff', lokasi: 'Jakarta Selatan', keahlian: 'Pengalaman marketing 1 tahun, Komunikatif, Kreatif' },
-    ];
-
-    const filteredPosisi = computed(() => {
-        return allPosisi.filter(posisi => {
-            const matchesLokasi = lokasiFilter.value === 'Semua Lokasi' || posisi.lokasi.toLowerCase().includes(lokasiFilter.value.toLowerCase());
-            const matchesPosisi = posisiFilter.value === 'Semua Posisi' || posisi.jenis.toLowerCase() === posisiFilter.value.toLowerCase();
-            const matchesKeyword = keywordSearch.value.toLowerCase() === '' ||
-                posisi.nama.toLowerCase().includes(keywordSearch.value.toLowerCase()) ||
-                posisi.lokasi.toLowerCase().includes(keywordSearch.value.toLowerCase()) ||
-                posisi.keahlian.toLowerCase().includes(keywordSearch.value.toLowerCase()) ||
-                posisi.jenis.toLowerCase().includes(keywordSearch.value.toLowerCase());
-
-            return matchesLokasi && matchesPosisi && matchesKeyword;
-        });
-    });
+    const karierStore = useKarierStore();
 </script>
 
 <style scoped>

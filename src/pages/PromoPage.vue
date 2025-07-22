@@ -2,14 +2,27 @@
     <div class="promo-container">
         <h1 class="text-h4 text-center q-mb-lg">Semua Promo</h1>
 
-        <div class="row q-col-gutter-xl q-row-gutter-xl justify-center">
+        <div v-if="promoStore.isLoading" class="text-center q-pa-lg">
+            <q-spinner-hourglass color="primary" size="3em" />
+            <div class="q-mt-md">Loading promos...</div>
+        </div>
+
+        <div v-else-if="promoStore.error" class="text-center q-pa-lg text-negative">
+            Error: {{ promoStore.error }}
+        </div>
+
+        <div v-else-if="promoStore.promos.length === 0" class="text-center q-pa-lg">
+            Tidak ada promo yang tersedia saat ini.
+        </div>
+
+        <div v-else class="row q-col-gutter-xl q-row-gutter-xl justify-center">
             <div
-                v-for="(promo, index) in promos"
+                v-for="(promo, index) in promoStore.promos"
                 :key="index"
                 class="col-xs-6 col-sm-6 col-md-6" >
                 <q-card class="q-pa-none shadow-2">
                     <div class="promo-image-wrapper">
-                        <q-img :src="promo.image" class="promo-image" />
+                        <q-img :src="`http://localhost:3333/${promo.image}`" class="promo-image" />
                     </div>
                     <q-card-section>
                         <div class="text-h6 q-mb-xs">{{ promo.title }}</div>
@@ -42,42 +55,16 @@
 </template>
 
 <script setup lang="ts">
+    import { onMounted } from 'vue';
+    import { usePromoStore } from 'src/stores/PromoStore';
     import FooterLayout from 'src/layouts/FooterLayout.vue';
-    const promos = [
-        {
-            image: "/images/PromoKresso.png",
-            title: "Harga spesial untuk Add-On Kresso",
-            description: "Harga spesial untuk Add-On Kresso senilai Rp.5.454* (harga belum termasuk pajak, harga normal Rp.9090*) disertai pembelian kebab variant apa saja. Syarat & Ketentuan berlaku.",
-            expired: "31 Juli 2025",
-            platforms: [
-                { logo: "/icons/DineIn.png", text: "All Outlet" },
-                { logo: "/icons/Delivery.png", text: "All Outlet" },
-                { logo: "/icons/TakeAway.png", text: "All Outlet" },
-            ],
-        },
-        {
-            image: "/images/PromoIftar.png",
-            title: "Combo Iftar",
-            description: "Kebab Rendang Salero hadir dengan cita rasa rempah otentik khas Payakumbuh, dibuat dari resep turun-temurun yang kaya bumbu dan dimasak dengan teknik terbaik!",
-            expired: "30 Agustus 2025",
-            platforms: [
-                { logo: "/icons/DineIn.png", text: "All Outlet" },
-                { logo: "/icons/Delivery.png", text: "All Outlet" },
-                { logo: "/icons/TakeAway.png", text: "All Outlet" },
-            ],
-        },
-        {
-            image: "/images/PromoTnT.png",
-            title: "Kabobs Taste & Treats: bundling Kebab + Merch",
-            description: "Official Merchandise dari KABOBS udah hadir loh! Lucu, gemesin, dan pastinya wajib kamu punya! Yup, ini dia *Kabobs Taste & Treats: bundling kebab + merch edisi spesial!*",
-            expired: "31 Desember 2025",
-            platforms: [
-                { logo: "/icons/DineIn.png", text: "All Outlet" },
-                { logo: "/icons/Delivery.png", text: "All Outlet" },
-                { logo: "/icons/TakeAway.png", text: "All Outlet" },
-            ],
-        },
-    ];
+    import { QSpinnerHourglass } from 'quasar';
+
+    const promoStore = usePromoStore();
+
+    onMounted(async () => {
+        await promoStore.fetchPromos();
+    });
 </script>
 
 <style scoped>

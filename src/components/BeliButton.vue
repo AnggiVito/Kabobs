@@ -5,7 +5,8 @@
         color="yellow-9"
         text-color="black"
         style="font-weight: bold;"
-        @click="goToOrderPage" >
+        @click="goToOrderPage"
+    >
         <q-avatar class="beli-logo q-mr-sm" square>
             <img src="/images/BeliLogo.png" />
         </q-avatar>
@@ -14,13 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+    import { useRouter } from 'vue-router';
 
-const router = useRouter();
+    const router = useRouter();
 
-const goToOrderPage = () => {
-    void router.push({ path: '/Order-now' });
-};
+    const goToOrderPage = () => {
+        void router.push({ path: '/Order-now' });
+    };
 </script>
 
 <style scoped>

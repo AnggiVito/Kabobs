@@ -1,49 +1,41 @@
 <template>
     <div>
-        <!-- Garis -->
         <div class="footer-divider"></div>
 
-        <!-- Footer -->
         <div class="footer-wrapper q-pa-lg">
             <div class="row q-col-gutter-lg justify-center">
 
-                <!-- Logo -->
                 <div class="col-12 col-md-2">
-                    <q-img src="/images/KabobsFooter.png" style="width: 140px" />
+                    <q-img :src="footerStore.getLogoImage" style="width: 140px" />
                 </div>
 
-                <!-- Navigasi -->
                 <div class="col-6 col-md-2">
-                    <a href="/AboutUs"><div class="footer-link">Tentang Kami</div></a>
-                    <a href="/Lokasi"><div class="footer-link">Lokasi</div></a>
-                    <a href="/Karier"><div class="footer-link">Karier</div></a>
-                    <a href="/FAQ"><div class="footer-link">FAQ</div></a>
-                    <a href="/ContactUs"><div class="footer-link">Hubungi Kami</div></a>
+                    <a v-for="(link, index) in footerStore.getNavLinks" :key="index" :href="link.route">
+                        <div class="footer-link">{{ link.label }}</div>
+                    </a>
                 </div>
 
-                <!-- Sosial Media -->
                 <div class="col-6 col-md-2">
-                    <a href="https://www.instagram.com/kabobs.id/" target="_blank" rel="noopener"><div class="footer-link">Instagram</div></a>
-                    <a href="https://www.tiktok.com/@kabobs.id" target="_blank" rel="noopener"><div class="footer-link">Tiktok</div></a>
-                    <a href="https://www.facebook.com/kabobs.id" target="_blank" rel="noopener"><div class="footer-link">Facebook</div></a>
+                    <a v-for="(social, index) in footerStore.getSocialMediaLinks" :key="index" :href="social.url" target="_blank" rel="noopener">
+                        <div class="footer-link">{{ social.name }}</div>
+                    </a>
                 </div>
 
-                <!-- Kolom 4: Alamat + Sign Up -->
                 <div class="col-12 col-md-4">
-                    <div class="footer-text text-bold">PT Tata Jago Utama</div>
+                    <div class="footer-text text-bold">{{ footerStore.getCompanyName }}</div>
                     <div class="footer-text q-mb-md">
-                        Jl. Ibrahim Adjie No.372a, Binong, Kec. Batununggal, Kota Bandung, Jawa Barat 40275
+                        {{ footerStore.getCompanyAddress }}
                     </div>
 
-                    <!-- Sign Up Form -->
-                    <div class="footer-text text-bold q-mb-sm">Sign Up untuk Order</div>
+                    <div class="footer-text text-bold q-mb-sm">{{ footerStore.getSignUpText }}</div>
                     <div class="row items-center no-wrap q-gutter-sm">
                         <q-input
-                        dense
-                        borderless
-                        placeholder="Masukkan email"
-                        class="footer-input"
-                        v-model="email"
+                            dense
+                            borderless
+                            placeholder="Masukkan email"
+                            class="footer-input"
+                            :model-value="footerStore.getEmailInput"
+                            @update:model-value="footerStore.setEmailInput"
                         />
                         <q-btn
                             label="Sign Up"
@@ -52,20 +44,20 @@
                             rounded
                             no-caps
                             class="custom-signup-btn"
+                            @click="footerStore.signUpForOrder"
                         />
                     </div>
                 </div>
             </div>
 
-            <!-- Kontak -->
             <div class="row q-mt-sm q-gutter-lg items-center justify-center">
                 <div class="row items-center">
                     <q-icon name="email" size="24px" class="q-mr-sm" />
-                    <span>marketing@kabobs.id</span>
+                    <span>{{ footerStore.getCompanyEmail }}</span>
                 </div>
                 <div class="row items-center">
                     <q-icon name="call" size="24px" class="q-ml-lg q-mr-sm" />
-                    <span>(62)811-1789-9000</span>
+                    <span>{{ footerStore.getCompanyPhone }}</span>
                 </div>
             </div>
         </div>
@@ -74,10 +66,10 @@
 </template>
 
 <script setup lang="ts">
-    import FooterCopyright from 'components/FooterCopyright.vue'
-    import { ref } from 'vue'
+    import { useFooterStore } from 'src/stores/FooterStore';
+    import FooterCopyright from 'src/components/FooterCopyright.vue';
 
-    const email = ref('')
+    const footerStore = useFooterStore();
 </script>
 
 <style scoped>
@@ -113,9 +105,9 @@
             gap: 12px;
             margin-top: 24px;
         }
-    }
+        }
 
-    @media (max-width: 768px) {
+        @media (max-width: 768px) {
         .q-img {
             margin: 0 auto;
         }
@@ -174,5 +166,4 @@
         background-color: #CC2E29 !important;
         color: white !important;
     }
-
 </style>

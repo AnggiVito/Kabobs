@@ -1,7 +1,7 @@
 <template>
-    <h1 class="text-h3 text-center q-mb-md">Hubungi Kami</h1>
+    <h1 class="text-h3 text-center q-mb-md">{{ contactUsStore.getPageTitle }}</h1>
     <p class="text-center q-mb-xs">
-        Punya pertanyaan atau komentar? Tulis saja pesan kepada kami!
+        {{ contactUsStore.getPageSubtitle }}
     </p>
     <div class="q-pa-lg bg-grey-1">
         <q-card class="main-card row q-pa-md">
@@ -9,145 +9,156 @@
                 <div class="yellow-card">
                     <div>
                         <q-img src="/images/LogoKabobs.png" class="logo" />
-                        <h5 class="text-h6">Informasi Kontak</h5>
+                        <h5 class="text-h6">{{ contactUsStore.getContactInfoHeading }}</h5>
                         <p>
-                            Jangan ragu untuk menghubungi kami untuk informasi lebih lanjut, kerja sama bisnis, atau pertanyaan seputar produk dan layanan kami. Tim kami siap membantu Anda dengan sepenuh hati.
+                            {{ contactUsStore.getContactInfoDescription }}
                         </p>
 
                         <div class="info-section">
                             <div class="info-item">
                                 <q-icon name="call" />
-                                <span>(62)811-1789-9000</span>
+                                <span>{{ contactUsStore.getPhoneNumber }}</span>
                             </div>
                             <div class="info-item">
                                 <q-icon name="email" />
-                                <span>marketing@kabobs.id</span>
+                                <span>{{ contactUsStore.getEmailAddress }}</span>
                             </div>
                             <div class="info-item">
                                 <q-icon name="place" />
                                 <span>
-                                Jl. Ibrahim Adjie No.372a, Binong,<br />
-                                Kec. Batununggal, Kota Bandung,<br />
-                                Jawa Barat 40275
+                                    {{ contactUsStore.getAddressLine }}<br />
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     <div class="social-icons row q-gutter-sm">
-                        <a href="https://instagram.com/kabobs.id" target="_blank" class="icon-circle">
+                        <a :href="contactUsStore.getInstagramUrl" target="_blank" class="icon-circle">
                             <q-icon name="fa-brands fa-instagram" />
                         </a>
-                        <a href="https://facebook.com/kabobs.id" target="_blank" class="icon-circle">
+                        <a :href="contactUsStore.getFacebookUrl" target="_blank" class="icon-circle">
                             <q-icon name="fa-brands fa-facebook-f" />
                         </a>
-                        <a href="https://tiktok.com/@kabobs.id" target="_blank" class="icon-circle">
+                        <a :href="contactUsStore.getTiktokUrl" target="_blank" class="icon-circle">
                             <q-icon name="fa-brands fa-tiktok" />
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Formulir Kontak -->
             <div class="col-12 col-md-7 q-pa-md form-right">
                 <transition name="fade-slide" mode="out-in">
-                    <div v-if="!isSubmitted" class="q-gutter-md">
-                        <div class="row q-col-gutter-md">
-                            <!-- Nama Depan -->
-                            <div class="col-12">
-                                <div class="input-label">Nama Depan</div>
-                                <q-input
-                                    borderless
-                                    v-model="form.firstName"
-                                    placeholder="Masukkan nama depan"
-                                    class="underlined-input"
-                                />
-                                <div class="divider-line"></div>
-                            </div>
+                    <div v-if="!contactUsStore.getIsSubmitted" class="q-gutter-md">
+                        <q-form @submit="handleFormSubmission" class="q-gutter-md">
+                            <div class="row q-col-gutter-md">
+                                <div class="col-12">
+                                    <div class="input-label">Nama Depan</div>
+                                    <q-input
+                                        borderless
+                                        :model-value="contactUsStore.getForm.firstName"
+                                        @update:model-value="(val) => contactUsStore.updateFormField('firstName', val as string)"
+                                        placeholder="Masukkan nama depan"
+                                        class="underlined-input"
+                                        :rules="[val => !!val && val.length > 0 || 'Nama depan wajib diisi']"
+                                        lazy-rules
+                                    />
+                                    <div class="divider-line"></div>
+                                </div>
 
-                            <!-- Nama Belakang -->
-                            <div class="col-12">
-                                <div class="input-label">Nama Belakang</div>
-                                <q-input
-                                    borderless
-                                    v-model="form.lastName"
-                                    placeholder="Masukkan nama belakang"
-                                    class="underlined-input"
-                                />
-                                <div class="divider-line"></div>
-                            </div>
+                                <div class="col-12">
+                                    <div class="input-label">Nama Belakang</div>
+                                    <q-input
+                                        borderless
+                                        :model-value="contactUsStore.getForm.lastName"
+                                        @update:model-value="(val) => contactUsStore.updateFormField('lastName', val as string)"
+                                        placeholder="Masukkan nama belakang"
+                                        class="underlined-input"
+                                        :rules="[val => !!val && val.length > 0 || 'Nama belakang wajib diisi']"
+                                        lazy-rules
+                                    />
+                                    <div class="divider-line"></div>
+                                </div>
 
-                            <!-- Email -->
-                            <div class="col-12">
-                                <div class="input-label">Email</div>
-                                <q-input
-                                    borderless
-                                    v-model="form.email"
-                                    placeholder="Masukkan email"
-                                    class="underlined-input"
-                                />
-                                <div class="divider-line"></div>
-                            </div>
+                                <div class="col-12">
+                                    <div class="input-label">Email</div>
+                                    <q-input
+                                        borderless
+                                        :model-value="contactUsStore.getForm.email"
+                                        @update:model-value="(val) => contactUsStore.updateFormField('email', val as string)"
+                                        placeholder="Masukkan email"
+                                        class="underlined-input"
+                                        type="email"
+                                        :rules="[val => !!val && val.length > 0 || 'Email wajib diisi', val => /.+@.+\..+/.test(val) || 'Format email tidak valid']"
+                                        lazy-rules
+                                    />
+                                    <div class="divider-line"></div>
+                                </div>
 
-                            <!-- Nomor Handphone -->
-                            <div class="col-12">
-                                <div class="input-label">Nomor Handphone</div>
-                                <q-input
-                                    borderless
-                                    v-model="form.phone"
-                                    placeholder="Masukkan nomor handphone"
-                                    class="underlined-input"
-                                />
-                                <div class="divider-line"></div>
-                            </div>
+                                <div class="col-12">
+                                    <div class="input-label">Nomor Handphone</div>
+                                    <q-input
+                                        borderless
+                                        :model-value="contactUsStore.getForm.phone"
+                                        @update:model-value="(val) => contactUsStore.updateFormField('phone', val as string)"
+                                        placeholder="Masukkan nomor handphone"
+                                        class="underlined-input"
+                                        type="tel"
+                                        :rules="[val => !!val && val.length > 0 || 'Nomor handphone wajib diisi', val => val.length >= 8 || 'Nomor telepon terlalu pendek']"
+                                        lazy-rules
+                                    />
+                                    <div class="divider-line"></div>
+                                </div>
 
-                            <!-- Kategori Pesan -->
-                            <div class="col-12">
-                                <div class="input-label q-pl-sm">Kategori Pesan</div>
-                                <q-option-group
-                                    v-model="form.category"
-                                    type="radio"
-                                    color="black"
-                                    :options="[
-                                        { label: 'Pertanyaan Umum', value: 'umum' },
-                                        { label: 'Komplain', value: 'komplain' },
-                                        { label: 'Masukan / Saran', value: 'saran' }
-                                    ]"
-                                    inline
-                                    class="radio-group-custom q-ml-sm"
-                                />
-                            </div>
+                                <div class="col-12">
+                                    <div class="input-label q-pl-sm">Kategori Pesan</div>
+                                    <q-option-group
+                                        :model-value="contactUsStore.getForm.category"
+                                        @update:model-value="(val) => contactUsStore.updateFormField('category', val as string)"
+                                        type="radio"
+                                        color="black"
+                                        :options="contactUsStore.getMessageCategories"
+                                        inline
+                                        class="radio-group-custom q-ml-sm"
+                                    />
+                                    <div v-if="!contactUsStore.getForm.category && submittedOnce" class="text-negative q-mt-xs q-ml-sm">
+                                        Kategori pesan wajib dipilih
+                                    </div>
+                                </div>
 
-                            <!-- Pesan -->
-                            <div class="col-12">
-                                <div class="input-label">Pesan</div>
-                                <q-input
-                                    borderless
-                                    v-model="form.message"
-                                    placeholder="Tulis pesan Anda..."
-                                    class="underlined-input"
-                                />
-                                <div class="divider-line"></div>
-                            </div>
+                                <div class="col-12">
+                                    <div class="input-label">Pesan</div>
+                                    <q-input
+                                        borderless
+                                        :model-value="contactUsStore.getForm.message"
+                                        @update:model-value="(val) => contactUsStore.updateFormField('message', val as string)"
+                                        placeholder="Tulis pesan Anda..."
+                                        class="underlined-input"
+                                        type="text"
+                                        rows="3"
+                                        :rules="[val => !!val && val.length > 0 || 'Pesan wajib diisi', val => val.length >= 10 || 'Pesan terlalu pendek']"
+                                        lazy-rules
+                                    />
+                                    <div class="divider-line"></div>
+                                </div>
 
-                            <!-- Tombol -->
-                            <div class="col-12 text-left">
-                                <q-btn
-                                label="Kirim Pesan"
-                                no-caps
-                                @click="handleSubmit"
-                                />
+                                <div class="col-12 text-left">
+                                    <q-btn
+                                        label="Kirim Pesan"
+                                        no-caps
+                                        type="submit"
+                                        :loading="contactUsStore.getIsLoading"
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        </q-form>
                     </div>
 
-                    <!-- Setelah submit -->
                     <div v-else class="q-pa-xl flex flex-center column text-center">
-                        <q-img src="/images/Success.png" class="after" />
+                        <q-img :src="contactUsStore.getSuccessImageSrc" class="after" />
                         <div class="text-h6 q-mt-md">Pesanmu akan segera diproses dan kami akan segera menghubungimu!</div>
                         <q-btn
                             label="Kembali"
-                            @click="resetForm"
+                            @click="contactUsStore.resetForm()"
                             no-caps
                         />
                     </div>
@@ -159,54 +170,44 @@
 </template>
 
 <script setup lang="ts">
-    import FooterCopyright from 'components/FooterCopyright.vue'
-    import { ref } from 'vue'
-    import { useQuasar } from 'quasar'
+    import { ref, onMounted } from 'vue';
+    import { useRoute } from 'vue-router';
+    import FooterCopyright from 'components/FooterCopyright.vue';
+    import { useQuasar } from 'quasar';
+    import { useContactUsStore } from 'src/stores/ContactUsStore';
 
-    const $q = useQuasar()
-    const isSubmitted = ref(false)
+    const $q = useQuasar();
+    const contactUsStore = useContactUsStore();
+    const route = useRoute();
+    const submittedOnce = ref(false);
 
-    function resetForm() {
-        form.value = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-            category: '',
-            message: ''
-        }
-        isSubmitted.value = false
-    }
+    onMounted(() => {
+        const categoryParam = route.query.category as string | string[] | null | undefined;
+        contactUsStore.initializeCategoryFromQuery(categoryParam);
+    });
 
-    const form = ref({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        category: '',
-        message: ''
-    })
+    async function handleFormSubmission() {
+        submittedOnce.value = true;
 
-    function handleSubmit() {
-        const { firstName, lastName, email, phone, category, message } = form.value
-
-        if (
-            !firstName.trim() ||
-            !lastName.trim() ||
-            !email.trim() ||
-            !phone.trim() ||
-            !category.trim?.() ||
-            !message.trim()
-        ) {
+        if (!contactUsStore.getForm.category.trim()) {
             $q.notify({
-            type: 'negative',
-            message: 'Semua kolom wajib diisi sebelum mengirim pesan.'
-            })
-            return
+                type: 'negative',
+                message: 'Kategori pesan wajib dipilih.',
+            });
+            return;
         }
 
-        $q.notify({ type: 'positive', message: 'Pesan berhasil dikirim!' })
-        isSubmitted.value = true
+        const success = await contactUsStore.submitForm();
+
+        if (success) {
+            $q.notify({ type: 'positive', message: 'Pesan berhasil dikirim!' });
+            submittedOnce.value = false;
+        } else {
+            $q.notify({
+                type: 'negative',
+                message: contactUsStore.getError || 'Terjadi kesalahan saat mengirim pesan.',
+            });
+        }
     }
 </script>
 
@@ -295,7 +296,6 @@
         padding-top: 20px;
     }
 
-
     .info-section {
         margin-top: 16px;
         display: flex;
@@ -360,7 +360,7 @@
         padding-left: 20px !important;
     }
 
-    .q-option-group{
+    .q-option-group {
         display: flex;
         flex-wrap: wrap;
         gap: 16px;
@@ -398,5 +398,4 @@
             margin-top: -80px;
         }
     }
-
 </style>

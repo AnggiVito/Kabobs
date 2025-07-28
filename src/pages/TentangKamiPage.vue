@@ -1,18 +1,16 @@
 <template>
     <q-page class="q-pa-md">
         <div class="row items-center q-gutter-xl tentang-kami-section">
-        <!-- SECTION KIRI -->
-            <div class="section-kiri">
+        <div class="section-kiri">
                 <div class="img-card-atas">
-                    <q-img src="/images/Sosmed2.png" class="img-utama" />
-                    <q-card class="card1">
+                    <q-img :src="aboutUsStore.getImgUtamaSrc" class="img-utama" /> <q-card class="card1">
                         <q-card-section>
                             <div class="row items-center justify-between">
-                                <div class="text-subtitle2">100+</div>
+                                <div class="text-subtitle2">{{ aboutUsStore.getStoreCount }}</div>
                                 <q-img class="stonks-icon" src="/icons/Stonks.png" />
                             </div>
                             <div class="text-caption1 q-mt-xs">
-                                Saat ini mengoperasikan 100 lebih toko dan akan bertambah lagi di masa mendatang.
+                                {{ aboutUsStore.getStoreDescription }}
                             </div>
                         </q-card-section>
                         <div class="card-bottom-line" />
@@ -22,9 +20,9 @@
                 <div class="img-card-bawah">
                     <q-card class="card2">
                         <q-card-section>
-                            <div class="text-subtitle2">Rating Tertinggi!</div>
+                            <div class="text-subtitle2">{{ aboutUsStore.getRatingTitle }}</div>
                             <div class="text-caption q-mt-xs">
-                                Rating tertinggi berkat kualitas rasa dan layanan yang konsisten.
+                                {{ aboutUsStore.getRatingDescription }}
                             </div>
                             <div class="emoji-inline q-mt-sm">
                                 <span>😊</span>
@@ -37,18 +35,14 @@
                         <div class="card-bottom-line" />
                     </q-card>
 
-                    <q-img src="/images/Sosmed1.png" class="img-sosmed1" />
-                </div>
+                    <q-img :src="aboutUsStore.getImgSosmed1Src" class="img-sosmed1" /> </div>
             </div>
 
-            <!-- SECTION KANAN -->
             <div class="text-wrapper">
-                <div class="text-judul q-mb-sm">TENTANG KAMI</div>
-                <div class="text-body q-mb-md">
-                    <strong>KABOBS - Premium Kebab</strong>, merupakan perusahaan makanan yang berdiri di Bandung. <strong>'Premium'</strong> bukan hanya sekedar nama, karena perusahaan ini bertujuan untuk memberikan yang terbaik, baik dari segi rasa maupun pelayanan.
+                <div class="text-judul q-mb-sm">{{ aboutUsStore.getAboutUsTitle }}</div>
+                <div class="text-body q-mb-md" v-html="aboutUsStore.getAboutUsBody1">
                 </div>
-                <div class="text-body">
-                    Sejak toko pertamanya diluncurkan pada tahun 2016, <strong>KABOBS</strong> telah berevolusi dan tumbuh, memperluas tokonya ke banyak lokasi strategis, dan menyediakan kebab segar bagi pelanggan yang kemudian menjadi kebab favorit mereka di Bandung.
+                <div class="text-body" v-html="aboutUsStore.getAboutUsBody2">
                 </div>
             </div>
         </div>
@@ -60,6 +54,9 @@
 <script setup lang="ts">
     import DownloadAppLayout from 'layouts/DownloadAppLayout.vue';
     import FooterLayout from 'src/layouts/FooterLayout.vue';
+    import { useAboutUsStore } from 'src/stores/TentangKamiStore';
+
+    const aboutUsStore = useAboutUsStore();
 </script>
 
 <style scoped>

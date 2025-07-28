@@ -1,6 +1,5 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <!-- Navbar -->
     <q-header elevated class="bg-white text-black">
       <q-toolbar class="toolbar-custom">
         <q-btn
@@ -9,63 +8,61 @@
           round
           icon="menu"
           class="q-visible-xs"
-          @click="drawer = !drawer"
+          @click="navbarStore.toggleDrawer()"
         />
         <div class="row items-center q-gutter-lg">
           <a href="/" class="q-visible-xs q-ml-auto">
-            <q-img src="/images/LogoKabobs.png" style="width: 80px; " />
+            <q-img src="/images/LogoKabobs.png" style="width: 80px;" />
           </a>
 
-          <!-- Dropdown Menu: Menu -->
           <div class="row items-center q-gutter-lg q-hidden-xs">
             <div class="nav-hover" @click="goToMenu"
-              @mouseenter="menuDropdown = true"
-              @mouseleave="menuDropdown = false">
+              @mouseenter="handleMenuEnter" @mouseleave="closeMenuDropdownWrapper()">
               Menu
                 <q-icon name="expand_more" size="20px" class="q-ml-xs" />
-                <q-menu v-model="menuDropdown" anchor="bottom left" self="top left" @mouseenter="openMenuDropdown" @mouseleave="closeMenuDropdown">
-                <div class="row no-wrap q-pa-md items-start" style="min-width: 550px">
-                  <q-list class="col-8">
-                    <div class="row">
-                      <div class="col">
-                        <div class="dropdown-item">Seasonal Menu</div>
-                        <div class="dropdown-item">Semua Menu</div>
-                        <div class="dropdown-item">Drinks</div>
-                        <div class="dropdown-item">Snack</div>
-                        <div class="dropdown-item highlight">Lihat Semua Menu›</div>
+                <q-menu v-model="navbarStore.menuDropdown" anchor="bottom left" self="top left"
+                  @mouseenter="handleMenuEnter" @mouseleave="closeMenuDropdownWrapper()">
+                  <div class="row no-wrap q-pa-md items-start" style="min-width: 550px">
+                    <q-list class="col-8">
+                      <div class="row">
+                        <div class="col">
+                          <div class="dropdown-item" @click="navigateToMenuPage('Seasonal Menu')">Seasonal Menu</div>
+                          <div class="dropdown-item" @click="navigateToMenuPage('Kebab')">Kebab</div>
+                          <div class="dropdown-item" @click="navigateToMenuPage('Drinks')">Drinks</div>
+                          <div class="dropdown-item" @click="navigateToMenuPage('Snacks')">Snack</div>
+                          <div class="dropdown-item highlight" @click="navigateToMenuPage('Semua Menu')">Lihat Semua Menu›</div>
+                        </div>
+                        
+                        <div class="col">
+                          <div class="dropdown-item" @click="navigateToMenuPage('Fun Box')">Funbox</div>
+                          <div class="dropdown-item" @click="navigateToMenuPage('Combo Seru')">Paket Combo Seru</div>
+                          <div class="dropdown-item" @click="navigateToMenuPage('Fun Set')">Paket Funset Seru</div>
+                        </div>
                       </div>
+                    </q-list>
 
-                      <div class="col">
-                        <div class="dropdown-item">Funbox</div>
-                        <div class="dropdown-item">Paket Combo Seru</div>
-                        <div class="dropdown-item">Paket Funbox Seru</div>
-                      </div>
+                    <div class="col-4 q-ml-md flex flex-center" style="min-height: 200px;">
+                      <q-img
+                        :src="navbarStore.getCurrentMenuImage"
+                        style="width: 150px; height: 150px; border-radius: 8px;"
+                      />
                     </div>
-                  </q-list>
-
-                  <div class="col-4 q-ml-md flex flex-center" style="min-height: 200px;">
-                    <q-img
-                      :src="menuImages[currentImage]"
-                      style="width: 150px; height: 150px; border-radius: 8px;"
-                    />
                   </div>
-                </div>
-              </q-menu>
+                </q-menu>
             </div>
-
 
             <div class="nav-hover" @click="goToPromo">Promo</div>
 
-            <div class="nav-hover"
-            @mouseenter="tentangDropdown = true"
-            @mouseleave="tentangDropdown = false"
+            <div class="nav-hover"  
+            @mouseenter="handleTentangEnter" @mouseleave="closeTentangDropdownWrapper()"
             @click="goToAboutUs">
               Tentang Kabobs
               <q-icon name="expand_more" size="20px" class="q-ml-xs" />
-              <q-menu v-model="tentangDropdown" anchor="bottom left" self="top left" @mouseenter="openTentangDropdown" @mouseleave="closeTentangDropdown">
+              <q-menu v-model="navbarStore.tentangDropdown" anchor="bottom left" self="top left"
+                      @mouseenter="handleTentangEnter" @mouseleave="closeTentangDropdownWrapper()">
                 <q-list style="min-width: 240px">
                   <div class="dropdown-item" @click="goToLokasi">Lokasi</div>
-                  <div class="dropdown-item" @click="goToKarier">Karir</div>
+                  <div class="dropdown-item" @click="goToKarier">Karier</div>
                   <div class="dropdown-item" @click="goToFAQ">FAQ</div>
                 </q-list>
               </q-menu>
@@ -74,31 +71,28 @@
             <div class="nav-hover" @click="goToContactUs">Contact Us</div>
           </div>
         </div>
-        <!-- Beli Online -->
         <BeliButton class="q-hidden-xs"/>
 
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="drawer" side="left" class="bg-white" bordered>
+    <q-drawer v-model="navbarStore.drawer" side="left" class="bg-white" bordered>
       <q-list>
-        <!-- MENU -->
         <q-expansion-item label="Menu" expand-separator>
-          <q-item clickable><q-item-section>Seasonal Menu</q-item-section></q-item>
-          <q-item clickable @click="goToMenu"><q-item-section>Semua Menu</q-item-section></q-item>
-          <q-item clickable><q-item-section>Drinks</q-item-section></q-item>
-          <q-item clickable><q-item-section>Snack</q-item-section></q-item>
-          <q-item clickable><q-item-section>Funbox</q-item-section></q-item>
-          <q-item clickable><q-item-section>Paket Combo Seru</q-item-section></q-item>
-          <q-item clickable><q-item-section>Paket Funbox Seru</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Seasonal Menu')"><q-item-section>Seasonal Menu</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Kebab')"><q-item-section>Kebab</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Drinks')"><q-item-section>Drinks</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Snacks')"><q-item-section>Snack</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Fun Box')"><q-item-section>Funbox</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Combo Seru')"><q-item-section>Paket Combo Seru</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Fun Set')"><q-item-section>Paket Funset Seru</q-item-section></q-item>
+          <q-item clickable @click="navigateToMenuPage('Semua Menu')"><q-item-section>Semua Menu</q-item-section></q-item>
         </q-expansion-item>
 
-        <!-- PROMO -->
         <q-item clickable @click="goToPromo">
           <q-item-section>Promo</q-item-section>
         </q-item>
 
-        <!-- TENTANG KABOBS -->
         <q-expansion-item label="Tentang Kabobs" expand-separator>
           <q-item clickable @click="goToAboutUs"><q-item-section>Tentang Kami</q-item-section></q-item>
           <q-item clickable @click="goToLokasi"><q-item-section>Lokasi</q-item-section></q-item>
@@ -106,7 +100,6 @@
           <q-item clickable @click="goToFAQ"><q-item-section>FAQ</q-item-section></q-item>
         </q-expansion-item>
 
-        <!-- CONTACT -->
         <q-item clickable @click="goToContactUs">
           <q-item-section>Contact Us</q-item-section>
         </q-item>
@@ -120,77 +113,99 @@
 
 <script setup lang="ts">
   import BeliButton from 'components/BeliButton.vue'
-  import { ref, onMounted, onBeforeUnmount } from 'vue'
+  import { onBeforeUnmount } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useNavbarStore } from 'src/stores/NavbarStore';
+
   const router = useRouter()
-  const menuDropdown = ref(false)
-  const drawer = ref(false)
-  const tentangDropdown = ref(false)
-  let menuTimeout: ReturnType<typeof setTimeout>
-  let tentangTimeout: ReturnType<typeof setTimeout>
+  const navbarStore = useNavbarStore();
 
-  function openMenuDropdown() {
-    clearTimeout(menuTimeout)
-    menuDropdown.value = true
-  }
-  function closeMenuDropdown() {
-    menuTimeout = setTimeout(() => (menuDropdown.value = false), 200)
+  let menuTimeout: ReturnType<typeof setTimeout> | null = null;
+  let tentangTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  function handleMenuEnter() {
+    if (menuTimeout) clearTimeout(menuTimeout);
+    navbarStore.setMenuDropdown(true);
   }
 
-  function openTentangDropdown() {
-    clearTimeout(tentangTimeout)
-    tentangDropdown.value = true
+  function handleTentangEnter() {
+    if (tentangTimeout) clearTimeout(tentangTimeout);
+    navbarStore.setTentangDropdown(true);
   }
-  function closeTentangDropdown() {
-    tentangTimeout = setTimeout(() => (tentangDropdown.value = false), 200)
+
+  function closeMenuDropdownWrapper() {
+    if (menuTimeout) clearTimeout(menuTimeout);
+    menuTimeout = setTimeout(() => {
+      navbarStore.setMenuDropdown(false);
+    }, 200);
+  }
+
+  function closeTentangDropdownWrapper() {
+    if (tentangTimeout) clearTimeout(tentangTimeout);
+    tentangTimeout = setTimeout(() => navbarStore.setTentangDropdown(false), 200);
   }
 
   function goToMenu() {
-    void router.push({ path: '/Menu' })
+    void router.push({ path: '/Menu' });
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
   }
 
   function goToFAQ() {
-    void router.push({ path: '/FAQ' })
+    void router.push({ path: '/FAQ' });
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
   }
 
   function goToAboutUs() {
-    void router.push({ path: '/AboutUs' })
+    void router.push({ path: '/AboutUs' });
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
   }
 
   function goToKarier() {
-    void router.push({ path: '/Karier' })
+    void router.push({ path: '/Karier' });
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
   }
 
   function goToLokasi() {
-    void router.push({ path: '/Lokasi' })
+    void router.push({ path: '/Lokasi' });
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
   }
 
   function goToPromo() {
-    void router.push({ path: '/Promo' })
+    void router.push({ path: '/Promo' });
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
   }
 
   function goToContactUs () {
-    void router.push({ path: '/ContactUs' })
+    void router.push({ path: '/ContactUs' });
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
   }
 
-  const menuImages = [
-    '/images/Thumbnail1.png',
-    '/images/Thumbnail2.png',
-    '/images/Thumbnail3.png',
-    '/images/Thumbnail4.png'
-  ]
-
-  const currentImage = ref(0)
-  let intervalId: ReturnType<typeof setInterval>
-
-  onMounted(() => {
-    intervalId = setInterval(() => {
-      currentImage.value = (currentImage.value + 1) % menuImages.length
-    }, 1500)
-  })
+  function navigateToMenuPage(category: string) {
+    void router.push({ path: '/Menu', query: { category: category === 'Semua Menu' ? undefined : category } });
+    navbarStore.setMenuDropdown(false);
+    if (navbarStore.getDrawer) {
+        navbarStore.toggleDrawer();
+    }
+  }
 
   onBeforeUnmount(() => {
-    clearInterval(intervalId)
+    navbarStore.stopImageCycle();
+    if (menuTimeout) clearTimeout(menuTimeout);
+    if (tentangTimeout) clearTimeout(tentangTimeout);
   })
 </script>
 
@@ -273,5 +288,4 @@
     height: auto;
     padding-right: 5px;
   }
-
 </style>

@@ -51,12 +51,21 @@
                 class="filter-search-input"
             >
                 <template v-slot:append>
-                    <q-icon name="search" />
+                <q-icon name="search" />
                 </template>
             </q-input>
         </div>
 
-        <div class="posisi-list q-mt-xl q-mx-auto">
+        <div v-if="karierStore.isLoading" class="text-center q-mt-xl q-py-lg">
+            <q-spinner-hourglass color="primary" size="3em" />
+            <div class="q-mt-md">Memuat posisi karier...</div>
+        </div>
+
+        <div v-else-if="karierStore.error" class="text-center q-mt-xl q-py-lg text-negative">
+            Terjadi kesalahan: {{ karierStore.error }}
+        </div>
+
+        <div v-else class="posisi-list q-mt-xl q-mx-auto">
             <div class="posisi-header q-mb-md q-hidden-md-and-down">
                 <div class="posisi-header-item header-posisi">
                     <q-icon name="person" size="24px" color="grey-7" />
@@ -75,7 +84,7 @@
 
             <q-card
                 v-for="(posisi, index) in karierStore.filteredPosisi"
-                :key="index"
+                :key="posisi.id || index"
                 class="posisi-card q-mb-md"
             >
                 <q-card-section class="posisi-card-content row no-wrap">
@@ -108,12 +117,20 @@
             </div>
         </div>
     </q-page>
+    <FooterLayout />
 </template>
 
 <script setup lang="ts">
+    import { onMounted } from 'vue';
     import { useKarierStore } from 'src/stores/KarierStore';
+    import { QSpinnerHourglass } from 'quasar';
+    import FooterLayout from 'src/layouts/FooterLayout.vue';
 
     const karierStore = useKarierStore();
+
+    onMounted(async () => {
+        await karierStore.fetchPosisiData();
+    });
 </script>
 
 <style scoped>
@@ -318,12 +335,12 @@
     }
 
     .posisi-card .text-subtitle1 {
-    color: #CD2F29;
-    font-size: 18px;
+        color: #CD2F29;
+        font-size: 18px;
     }
 
     .posisi-card .text-caption {
-    font-size: 13px;
+        font-size: 13px;
     }
 
     @media (max-width: 991px) {

@@ -35,6 +35,7 @@
                         
                         <div class="col">
                           <div class="dropdown-item" @click="navigateToMenuPage('Fun Box')">Funbox</div>
+                          <div class="dropdown-item" @click="navigateToMenuPage('Combobs')">Combobs</div>
                           <div class="dropdown-item" @click="navigateToMenuPage('Combo Seru')">Paket Combo Seru</div>
                           <div class="dropdown-item" @click="navigateToMenuPage('Fun Set')">Paket Funset Seru</div>
                         </div>

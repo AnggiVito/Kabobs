@@ -1,0 +1,388 @@
+<template>
+    <q-page class="q-pa-md apply-now-page">
+        <div class="apply-container q-mx-auto">
+            <div class="apply-header text-center">
+                <div class="header-content row items-center no-wrap">
+                    <q-img src="/images/LogoKabobs.png" alt="Kabobs Logo" class="header-logo q-mr-md" />
+                    <div class="header-title">{{ positionName }}</div>
+                </div>
+            </div>
+
+            <div class="intro-message q-mt-lg">
+                <p>Terima kasih atas minat Anda untuk bergabung dengan tim kami! Untuk lebih mengenal Anda, mohon lengkapi semua bagian formulir ini. Formulir ini membutuhkan waktu sekitar 15-30 menit untuk diselesaikan.</p>
+                <p class="q-mt-sm">Saat Anda mengirimkan formulir ini, informasi pribadi Anda seperti nama dan alamat email tidak akan secara otomatis dikumpulkan kecuali Anda memberikannya sendiri.</p>
+                <p class="required-note q-mt-md">* Wajib diisi</p>
+            </div>
+
+            <q-form @submit="onSubmit" class="q-gutter-md apply-form">
+                <h2 class="form-section-title">Informasi Pribadi & Kontak</h2>
+                <div class="row q-col-gutter-md">
+                    <div class="col-xs-12 col-sm-6">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.firstName"
+                            @update:model-value="val => applyNowStore.setFormField('firstName', val as string)"
+                            label="Nama Depan *"
+                            lazy-rules
+                            :rules="[val => !!val || 'Nama Depan wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.lastName"
+                            @update:model-value="val => applyNowStore.setFormField('lastName', val as string)"
+                            label="Nama Belakang *"
+                            lazy-rules
+                            :rules="[val => !!val || 'Nama Belakang wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.fullAddress"
+                            @update:model-value="val => applyNowStore.setFormField('fullAddress', val as string)"
+                            label="Alamat Lengkap *"
+                            type="textarea"
+                            rows="3"
+                            lazy-rules
+                            :rules="[val => !!val || 'Alamat Lengkap wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.phoneNumber"
+                            @update:model-value="val => applyNowStore.setFormField('phoneNumber', val as string)"
+                            label="Nomor Telepon *"
+                            type="tel"
+                            lazy-rules
+                            :rules="[val => !!val || 'Nomor Telepon wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.email"
+                            @update:model-value="val => applyNowStore.setFormField('email', val as string)"
+                            label="Email *"
+                            type="email"
+                            lazy-rules
+                            :rules="[
+                                val => !!val || 'Email wajib diisi',
+                                val => /.+@.+\..+/.test(val) || 'Format email tidak valid'
+                            ]"
+                        />
+                    </div>
+                    <div class="col-xs-12">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.linkedin"
+                            @update:model-value="val => applyNowStore.setFormField('linkedin', val as string | null)"
+                            label="URL Profil LinkedIn (Opsional)"
+                            type="url"
+                            :rules="[val => !val || /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/.test(val) || 'URL LinkedIn tidak valid']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-select
+                            outlined
+                            :model-value="applyNowStore.getFormData.gender"
+                            @update:model-value="val => applyNowStore.setFormField('gender', val as string | null)"
+                            :options="genderOptions"
+                            label="Jenis Kelamin *"
+                            lazy-rules
+                            :rules="[val => !!val || 'Jenis Kelamin wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-select
+                            outlined
+                            :model-value="applyNowStore.getFormData.education"
+                            @update:model-value="val => applyNowStore.setFormField('education', val as string | null)"
+                            :options="educationOptions"
+                            label="Pendidikan Tertinggi *"
+                            lazy-rules
+                            :rules="[val => !!val || 'Pendidikan wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.fatherName"
+                            @update:model-value="val => applyNowStore.setFormField('fatherName', val as string)"
+                            label="Nama Lengkap Ayah Kandung *"
+                            lazy-rules
+                            :rules="[val => !!val || 'Nama Ayah Kandung wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.motherName"
+                            @update:model-value="val => applyNowStore.setFormField('motherName', val as string)"
+                            label="Nama Lengkap Ibu Kandung *"
+                            lazy-rules
+                            :rules="[val => !!val || 'Nama Ibu Kandung wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <q-select
+                            outlined
+                            :model-value="applyNowStore.getFormData.maritalStatus"
+                            @update:model-value="val => applyNowStore.setFormField('maritalStatus', val as string | null)"
+                            :options="maritalStatusOptions"
+                            label="Status Pernikahan *"
+                            lazy-rules
+                            :rules="[val => !!val || 'Status Pernikahan wajib diisi']"
+                        />
+                    </div>
+                </div>
+
+                <h2 class="form-section-title q-mt-xl">Pengalaman Kerja</h2>
+                <div class="row q-col-gutter-md">
+                    <div class="col-xs-12">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.previousJob"
+                            @update:model-value="val => applyNowStore.setFormField('previousJob', val as string)"
+                            label="Pekerjaan Sebelumnya / Pemberi Kerja Terakhir (Min. 1) *"
+                            type="textarea"
+                            rows="2"
+                            hint="Contoh: Nama Perusahaan, Posisi, Tahun Kerja"
+                            lazy-rules
+                            :rules="[val => !!val || 'Informasi pekerjaan sebelumnya wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.whyKabobs"
+                            @update:model-value="val => applyNowStore.setFormField('whyKabobs', val as string)"
+                            label="Mengapa Anda ingin bergabung dengan Kabobs? *"
+                            type="textarea"
+                            rows="3"
+                            lazy-rules
+                            :rules="[val => !!val || 'Alasan bergabung dengan Kabobs wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.reasonForLeaving"
+                            @update:model-value="val => applyNowStore.setFormField('reasonForLeaving', val as string)"
+                            label="Alasan keluar dari pekerjaan sebelumnya *"
+                            type="textarea"
+                            rows="3"
+                            lazy-rules
+                            :rules="[val => !!val || 'Alasan keluar dari pekerjaan sebelumnya wajib diisi']"
+                        />
+                    </div>
+                    <div class="col-xs-12">
+                        <q-file
+                            outlined
+                            :model-value="applyNowStore.getFormData.cvFile"
+                            @update:model-value="val => applyNowStore.setFormField('cvFile', val as FileList | null)"
+                            label="Unggah CV (Hanya PDF) *"
+                            accept=".pdf"
+                            max-files="1"
+                            lazy-rules
+                            :rules="[val => !!val || 'CV wajib diunggah', val => val && val[0] && val[0].size < 5 * 1024 * 1024 || 'Ukuran CV harus kurang dari 5MB']"
+                        >
+                            <template v-slot:append>
+                                <q-icon name="attach_file" />
+                            </template>
+                        </q-file>
+                    </div>
+                    <div class="col-xs-12">
+                        <q-input
+                            outlined
+                            :model-value="applyNowStore.getFormData.expectedSalary"
+                            @update:model-value="val => applyNowStore.setFormField('expectedSalary', val as number | null)"
+                            label="Ekspektasi Gaji (IDR) *"
+                            type="number"
+                            prefix="Rp"
+                            lazy-rules
+                            :rules="[val => !!val || 'Ekspektasi Gaji wajib diisi', val => val > 0 || 'Gaji harus angka positif']"
+                        />
+                    </div>
+                </div>
+
+                <div class="q-mt-xl flex justify-center">
+                <q-btn label="Kirim Lamaran" type="submit" color="red-9" class="submit-btn" no-caps rounded />
+                </div>
+            </q-form>
+        </div>
+    </q-page>
+    <FooterLayout />
+</template>
+
+<script setup lang="ts">
+    import { ref, computed, onMounted } from 'vue';
+    import { useRoute } from 'vue-router';
+    import { useQuasar } from 'quasar';
+    import { useKarierStore } from 'src/stores/KarierStore';
+    import FooterLayout from 'layouts/FooterLayout.vue';
+    import { useApplyNowStore } from 'src/stores/ApplyNowStore';
+
+    const $q = useQuasar();
+    const route = useRoute();
+    const karierStore = useKarierStore();
+    const applyNowStore = useApplyNowStore(); 
+
+    const positionId = computed(() => Number(route.params.positionId));
+
+    const positionName = ref('Memuat Posisi...');
+    onMounted(async () => {
+        if (positionId.value) {
+            await karierStore.fetchKarierDetail(positionId.value);
+            if (karierStore.selectedKarierDetail) {
+                positionName.value = karierStore.selectedKarierDetail.namaposisi;
+            } else {
+                positionName.value = 'Posisi Tidak Ditemukan';
+            }
+        } else {
+            positionName.value = 'Aplikasi Umum';
+        }
+    });
+
+    const genderOptions = ['Pria', 'Wanita', 'Lainnya'];
+    const educationOptions = ['SMA/SMK', 'D3', 'S1', 'S2', 'S3'];
+    const maritalStatusOptions = ['Lajang', 'Menikah', 'Cerai', 'Janda/Duda'];
+
+    async function onSubmit() {
+        const submitResult = await applyNowStore.submitApplication(positionId.value);
+
+        if (submitResult.success) {
+            $q.notify({
+                type: 'positive',
+                message: submitResult.message,
+                caption: submitResult.caption || '', 
+            });
+            applyNowStore.resetForm();
+        } else {
+            $q.notify({
+                type: 'negative',
+                message: submitResult.message,
+                caption: submitResult.caption || '', 
+            });
+        }
+    }
+</script>
+
+<style scoped>
+    .apply-now-page {
+        background-color: #f2f2f2;
+        padding-bottom: 50px;
+    }
+
+    .apply-container {
+        max-width: 900px;
+        margin-top: 40px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .apply-header {
+        background-color: #FFD400;
+        color: #fff;
+        padding: 20px;
+        position: relative;
+    }
+
+    .header-content {
+        max-width: 800px;
+        margin: 0 auto;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .header-logo {
+        width: 50px;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .header-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #CC2E29;
+    }
+
+    .intro-message {
+        padding: 25px 40px;
+        border-bottom: 1px solid #eee;
+        color: #555;
+        font-size: 15px;
+    }
+
+    .required-note {
+        color: #CC2E29;
+        font-size: 14px;
+    }
+
+    .apply-form {
+        padding: 30px 40px;
+    }
+
+    .form-section-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #FFD400;
+        display: inline-block;
+    }
+
+    .q-input, .q-select, .q-file {
+        margin-bottom: 10px;
+    }
+
+    .submit-btn {
+        height: 50px;
+        padding: 0 30px;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #CC2E29 !important;
+        color: #FFD400 !important;
+    }
+
+    .submit-btn:hover {
+        background-color: #CC2E29 !important;
+    }
+
+    @media (max-width: 768px) {
+        .apply-container {
+            margin-top: 20px;
+            box-shadow: none;
+            border-radius: 0;
+        }
+        .apply-header {
+            padding: 15px;
+        }
+        .header-logo {
+            width: 40px;
+        }
+        .header-title {
+            font-size: 22px;
+        }
+        .intro-message, .apply-form {
+            padding: 20px 15px;
+        }
+        .form-section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .q-input, .q-select, .q-file {
+            margin-bottom: 5px;
+        }
+        .submit-btn {
+            width: 100%;
+            font-size: 16px;
+            height: 45px;
+        }
+    }
+</style>

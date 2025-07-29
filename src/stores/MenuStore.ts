@@ -28,7 +28,7 @@ export const useMenuStore = defineStore('menu', {
         pageTitle: 'Menu Kabobs',
         categoryButtons: [
             'Semua Menu', 'Kebab', 'Drinks', 'Snacks',
-            'Fun Box', 'Fun Set', 'Combobs', 'Combo Seru', 'Seasonal Menu'
+            'Combobs', 'Fun Set', 'Fun Box', 'Combo Seru', 'Seasonal Menu'
         ],
         selectedCategory: 'Semua Menu',
         allMenusRaw: [],

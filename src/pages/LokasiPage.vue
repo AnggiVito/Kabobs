@@ -160,16 +160,14 @@
   const defaultMarkerIcon = new Icon({
     iconUrl: 'icons/Marker.png',
     iconRetinaUrl: 'icons/Marker.png',
-    shadowUrl: '/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 
   const activeMarkerIcon = new Icon({
-    iconUrl: '/marker-icon-red.png',
-    iconRetinaUrl: '/marker-icon-red-2x.png',
-    shadowUrl: '/marker-shadow.png',
+    iconUrl: 'icons/Marker.png',
+    iconRetinaUrl: 'icons/Marker.png',
     iconSize: [35, 55],
     iconAnchor: [17, 55],
     popupAnchor: [1, -50],

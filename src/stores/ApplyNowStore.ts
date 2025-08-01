@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 export interface ApplicationFormData {
     firstName: string;
     lastName: string;
-    fullAddress: string;
+    address: string;
     phoneNumber: string;
     email: string;
     linkedin: string | null;
@@ -18,6 +18,8 @@ export interface ApplicationFormData {
     whyKabobs: string;
     reasonForLeaving: string;
     cvFile: FileList | null;
+    ktpFile: FileList | null;
+    npwpFile: FileList | null;
     expectedSalary: number | null;
     [key: string]: string | number | boolean | FileList | null | undefined;
 }
@@ -31,7 +33,7 @@ interface ApplyNowState {
 const initialFormData: ApplicationFormData = {
     firstName: '',
     lastName: '',
-    fullAddress: '',
+    address: '',
     phoneNumber: '',
     email: '',
     linkedin: null,
@@ -44,6 +46,8 @@ const initialFormData: ApplicationFormData = {
     whyKabobs: '',
     reasonForLeaving: '',
     cvFile: null,
+    ktpFile: null,
+    npwpFile: null,
     expectedSalary: null,
 };
 
@@ -75,44 +79,72 @@ export const useApplyNowStore = defineStore('applyNow', {
             this.error = null;
 
             const dataToSend = new FormData();
+            const { formData } = this;
 
-            for (const key in this.formData) {
-                if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
-                    const value = this.formData[key as keyof ApplicationFormData];
-                    
-                    if (key === 'cvFile') {
-                        if (value instanceof FileList && value.length > 0 && value[0]) {
-                            dataToSend.append(key, value[0]);
-                        }
-                    } else if (value !== null && value !== undefined) {
-                        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-                            dataToSend.append(key, String(value));
-                        }
-                    }
-                }
+            if (formData.firstName) dataToSend.append('firstName', formData.firstName);
+            if (formData.lastName) dataToSend.append('lastName', formData.lastName);
+            if (formData.address) dataToSend.append('address', formData.address);
+            if (formData.phoneNumber) dataToSend.append('phoneNumber', formData.phoneNumber);
+            if (formData.email) dataToSend.append('email', formData.email);
+            if (formData.linkedin) dataToSend.append('linkedin', formData.linkedin);
+            if (formData.gender) dataToSend.append('gender', formData.gender);
+            if (formData.education) dataToSend.append('education', formData.education);
+            if (formData.fatherName) dataToSend.append('fatherName', formData.fatherName);
+            if (formData.motherName) dataToSend.append('motherName', formData.motherName);
+            if (formData.maritalStatus) dataToSend.append('maritalStatus', formData.maritalStatus);
+            if (formData.previousJob) dataToSend.append('previousJob', formData.previousJob);
+            if (formData.whyKabobs) dataToSend.append('whyKabobs', formData.whyKabobs);
+            if (formData.reasonForLeaving) dataToSend.append('reasonForLeaving', formData.reasonForLeaving);
+            if (formData.expectedSalary) dataToSend.append('expectedSalary', String(formData.expectedSalary));
+
+            const cvFile = formData.cvFile?.[0];
+            if (cvFile) {
+                dataToSend.append('cvFile', cvFile);
             }
 
+            const ktpFile = formData.ktpFile?.[0];
+            if (ktpFile) {
+                dataToSend.append('ktpFile', ktpFile);
+            }
+
+            const npwpFile = formData.npwpFile?.[0];
+            if (npwpFile) {
+                dataToSend.append('npwpFile', npwpFile);
+            }
+            
             if (positionId) {
                 dataToSend.append('positionId', String(positionId));
             }
 
+            for (const pair of dataToSend.entries()) {
+                console.log(pair[0] + ':', pair[1]);
+            }
+
             try {
-                const response = await baseApi.post('/api/applications', dataToSend, { 
+                const response = await baseApi.post('submissions', dataToSend, {
                     headers: {
-                        'Content-Type': 'multipart/form-data' 
-                    }
+                        'Content-Type': 'multipart/form-data',
+                    },
                 });
-                
+
                 return { success: true, message: response.data.message || 'Lamaran berhasil dikirim!', caption: '' };
 
             } catch (error: unknown) {
                 let errorMessage = 'Gagal mengirim lamaran. Mohon coba lagi.';
                 let errorCaption = '';
 
-                if (error instanceof AxiosError) {
-                    errorMessage = error.response?.data?.message || errorMessage;
-                    if (error.response?.data?.errors) {
-                        errorCaption = Object.values(error.response.data.errors).flat().join(', ');
+                if (error instanceof AxiosError && error.response?.data) {
+                    const errorData = error.response.data;
+                    errorMessage = errorData.message || 'Validasi data lamaran gagal.';
+
+                    if (errorData.errors && Array.isArray(errorData.errors.errors)) {
+                        errorCaption = errorData.errors.errors
+                        .map((e: { message: string }) => e.message)
+                        .join(' ');
+                    } else if (Array.isArray(errorData.errors)) {
+                        errorCaption = errorData.errors
+                        .map((e: { message: string }) => e.message)
+                        .join(' ');
                     }
                 } else if (error instanceof Error) {
                     errorMessage = error.message;
@@ -121,6 +153,7 @@ export const useApplyNowStore = defineStore('applyNow', {
                 this.error = errorMessage;
                 console.error('Error submitting application:', error);
                 return { success: false, message: errorMessage, caption: errorCaption };
+
             } finally {
                 this.isLoading = false;
             }

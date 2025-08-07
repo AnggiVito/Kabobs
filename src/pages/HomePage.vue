@@ -933,7 +933,7 @@
         .k-stars {
             width: 127px;
             height: 127px;
-            margin-left: 0;
+            margin-left: -40px;
         }
 
         .k-stars-img {

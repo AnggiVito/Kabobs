@@ -30,7 +30,7 @@
                 expanded-icon="remove"
             >
                 <div class="divider-line"></div>
-                <div v-html="faq.answer" class="q-pa-sm text-body2 text-grey-8"></div>
+                <div v-html="faq.answer" class="q-pa-sm text-body2 faq-answer"></div>
             </q-expansion-item>
         </div>
     </div>
@@ -64,7 +64,7 @@
     }
 
     .faq-box {
-        border: 3px solid #8d8d8d;
+        border: 3px solid #000000;
         border-radius: 12px;
         box-shadow: 0 10px 4px rgba(0, 0, 0, 0.06);
         transition: all 0.3s ease;
@@ -74,15 +74,15 @@
     }
 
     .faq-box:hover {
-        border-color: #000000;
+        border-color: #CC2E29;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
         background-color: #ffffff;
     }
 
-    .faq-question {
+    .faq-answer {
+        font-size: 14px;
+        color: #CC2E29;
         font-weight: 600;
-        font-size: 16px;
-        color: #333;
         padding: 12px;
     }
 

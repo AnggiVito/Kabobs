@@ -65,8 +65,12 @@
               "
               label="Nomor Telepon *"
               type="tel"
-              lazy-rules
-              :rules="[(val) => !!val || 'Nomor Telepon wajib diisi']"
+              :rules="[
+                (val) => !!val || 'Nomor Telepon wajib diisi',
+
+                (val) => /^\d+$/.test(val) || 'Hanya angka yang diizinkan',
+              ]"
+              inputmode="numeric" 
             />
           </div>
           <div class="col-xs-12 col-sm-6">
@@ -255,18 +259,17 @@
           <div class="col-xs-12">
             <q-input
               outlined
-              :model-value="applyNowStore.getFormData.expectedSalary"
-              @update:model-value="
-                (val) => applyNowStore.setFormField('expectedSalary', val as number | null)
-              "
+              :model-value="formattedSalary"
+              @update:model-value="updateSalary"
               label="Ekspektasi Gaji (IDR) *"
-              type="number"
+              type="text"
               prefix="Rp"
               lazy-rules
               :rules="[
                 (val) => !!val || 'Ekspektasi Gaji wajib diisi',
-                (val) => val > 0 || 'Gaji harus angka positif',
+                (val) => parseFormattedNumber(val) > 0 || 'Gaji harus angka positif',
               ]"
+              inputmode="numeric"
             />
           </div>
         </div>
@@ -288,193 +291,212 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useQuasar, QForm } from 'quasar';
-import { useKarierStore } from 'src/stores/KarierStore';
-import FooterLayout from 'layouts/FooterLayout.vue';
-import { useApplyNowStore } from 'src/stores/ApplyNowStore';
+  import { ref, computed, onMounted } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { useQuasar, QForm } from 'quasar';
+  import { useKarierStore } from 'src/stores/KarierStore';
+  import FooterLayout from 'layouts/FooterLayout.vue';
+  import { useApplyNowStore } from 'src/stores/ApplyNowStore';
 
-const $q = useQuasar();
-const route = useRoute();
-const karierStore = useKarierStore();
-const applyNowStore = useApplyNowStore();
-const router = useRouter();
-const positionId = computed(() => Number(route.params.positionId));
-const applicationForm = ref<QForm | null>(null);
-const positionName = ref('Memuat Posisi...');
+  const $q = useQuasar();
+  const route = useRoute();
+  const karierStore = useKarierStore();
+  const applyNowStore = useApplyNowStore();
+  const router = useRouter();
+  const positionId = computed(() => Number(route.params.positionId));
+  const applicationForm = ref<QForm | null>(null);
+  const positionName = ref('Memuat Posisi...');
 
-onMounted(async () => {
-  if (positionId.value) {
-    await karierStore.fetchKarierDetail(positionId.value);
-    if (karierStore.selectedKarierDetail) {
-      positionName.value = karierStore.selectedKarierDetail.namaposisi;
+  onMounted(async () => {
+    if (positionId.value) {
+      await karierStore.fetchKarierDetail(positionId.value);
+      if (karierStore.selectedKarierDetail) {
+        positionName.value = karierStore.selectedKarierDetail.namaposisi;
+      } else {
+        positionName.value = 'Posisi Tidak Ditemukan';
+      }
     } else {
-      positionName.value = 'Posisi Tidak Ditemukan';
+      positionName.value = 'Aplikasi Umum';
     }
-  } else {
-    positionName.value = 'Aplikasi Umum';
-  }
-});
+    salaryValue.value = applyNowStore.getFormData.expectedSalary || null;
+  });
 
-const genderOptions = ['Pria', 'Wanita', 'Lainnya'];
-const educationOptions = ['SMA/SMK', 'D3', 'S1', 'S2', 'S3'];
-const maritalStatusOptions = ['Lajang', 'Menikah', 'Cerai', 'Janda/Duda'];
-function onFileChange(file: never) {
-  if (file) {
-    applyNowStore.setFormField('cvFile', file);
-  }
-}
-async function onSubmit() {
-  const formIsValid = await applicationForm.value?.validate();
+  const salaryValue = ref<number | null>(null);
 
-  if (!formIsValid) {
-    $q.notify({
-      type: 'negative',
-      message: 'Mohon lengkapi semua data wajib.',
-      caption: 'Periksa kembali formulir Anda.',
-    });
-    return;
-  }
+  const parseFormattedNumber = (val: string): number => {
+    const cleanedValue = String(val || '').replace(/\D/g, '');
+    return parseInt(cleanedValue, 10) || 0;
+  };
 
-  const submitResult = await applyNowStore.submitApplication(positionId.value);
+  const formattedSalary = computed(() => {
+    if (salaryValue.value === null || salaryValue.value === 0) return '';
+    return new Intl.NumberFormat('id-ID').format(salaryValue.value);
+  });
 
-  if (submitResult.success) {
-    $q.notify({
-      type: 'positive',
-      message: submitResult.message,
-      caption: submitResult.caption || '',
-    });
-    applyNowStore.resetForm();
-    await router.replace('Karier')
-  } else {
-    $q.notify({
-      type: 'negative',
-      message: submitResult.message,
-      caption: submitResult.caption || '',
-    });
+  const updateSalary = (value: string | number | null) => {
+    const numericValue = parseFormattedNumber(String(value ?? ''));
+    salaryValue.value = numericValue;
+    applyNowStore.setFormField('expectedSalary', numericValue);
+  };
+
+  const genderOptions = ['Pria', 'Wanita', 'Lainnya'];
+  const educationOptions = ['SMA/SMK', 'D3', 'S1', 'S2', 'S3'];
+  const maritalStatusOptions = ['Lajang', 'Menikah', 'Cerai', 'Janda/Duda'];
+  function onFileChange(file: never) {
+    if (file) {
+      applyNowStore.setFormField('cvFile', file);
+    }
   }
-}
+  async function onSubmit() {
+    const formIsValid = await applicationForm.value?.validate();
+
+    if (!formIsValid) {
+      $q.notify({
+        type: 'negative',
+        message: 'Mohon lengkapi semua data wajib.',
+        caption: 'Periksa kembali formulir Anda.',
+      });
+      return;
+    }
+
+    const submitResult = await applyNowStore.submitApplication(positionId.value);
+
+    if (submitResult.success) {
+      $q.notify({
+        type: 'positive',
+        message: submitResult.message,
+        caption: submitResult.caption || '',
+      });
+      applyNowStore.resetForm();
+      await router.replace(`/Karier`);
+    } else {
+      $q.notify({
+        type: 'negative',
+        message: submitResult.message,
+        caption: submitResult.caption || '',
+      });
+    }
+  }
 </script>
 
 <style scoped>
-.apply-now-page {
-  background-color: #f2f2f2;
-  padding-bottom: 50px;
-}
+  .apply-now-page {
+    background-color: #f2f2f2;
+    padding-bottom: 50px;
+  }
 
-.apply-container {
-  max-width: 900px;
-  margin-top: 40px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.apply-header {
-  background-color: #ffd400;
-  color: #fff;
-  padding: 20px;
-  position: relative;
-}
-
-.header-content {
-  max-width: 800px;
-  margin: 0 auto;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.header-logo {
-  width: 50px;
-  height: auto;
-  object-fit: contain;
-}
-
-.header-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #cc2e29;
-}
-
-.intro-message {
-  padding: 25px 40px;
-  border-bottom: 1px solid #eee;
-  color: #555;
-  font-size: 15px;
-}
-
-.required-note {
-  color: #cc2e29;
-  font-size: 14px;
-}
-
-.apply-form {
-  padding: 30px 40px;
-}
-
-.form-section-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #ffd400;
-  display: inline-block;
-}
-
-.q-input,
-.q-select,
-.q-file {
-  margin-bottom: 10px;
-}
-
-.submit-btn {
-  height: 50px;
-  padding: 0 30px;
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #cc2e29 !important;
-  color: #ffd400 !important;
-}
-
-.submit-btn:hover {
-  background-color: #aa1e19 !important;
-}
-
-@media (max-width: 768px) {
   .apply-container {
-    margin-top: 20px;
-    box-shadow: none;
-    border-radius: 0;
+    max-width: 900px;
+    margin-top: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
   }
+
   .apply-header {
-    padding: 15px;
+    background-color: #ffd400;
+    color: #fff;
+    padding: 20px;
+    position: relative;
   }
+
+  .header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
   .header-logo {
-    width: 40px;
+    width: 50px;
+    height: auto;
+    object-fit: contain;
   }
+
   .header-title {
-    font-size: 22px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #cc2e29;
   }
-  .intro-message,
+
+  .intro-message {
+    padding: 25px 40px;
+    border-bottom: 1px solid #eee;
+    color: #555;
+    font-size: 15px;
+  }
+
+  .required-note {
+    color: #cc2e29;
+    font-size: 14px;
+  }
+
   .apply-form {
-    padding: 20px 15px;
+    padding: 30px 40px;
   }
+
   .form-section-title {
-    font-size: 18px;
-    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #ffd400;
+    display: inline-block;
   }
+
   .q-input,
   .q-select,
   .q-file {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
+
   .submit-btn {
-    width: 100%;
-    font-size: 16px;
-    height: 45px;
+    height: 50px;
+    padding: 0 30px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #cc2e29 !important;
+    color: #ffd400 !important;
   }
-}
+
+  .submit-btn:hover {
+    background-color: #aa1e19 !important;
+  }
+
+  @media (max-width: 768px) {
+    .apply-container {
+      margin-top: 20px;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    .apply-header {
+      padding: 15px;
+    }
+    .header-logo {
+      width: 40px;
+    }
+    .header-title {
+      font-size: 22px;
+    }
+    .intro-message,
+    .apply-form {
+      padding: 20px 15px;
+    }
+    .form-section-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    .q-input,
+    .q-select,
+    .q-file {
+      margin-bottom: 5px;
+    }
+    .submit-btn {
+      width: 100%;
+      font-size: 16px;
+      height: 45px;
+    }
+  }
 </style>

@@ -96,42 +96,43 @@ export const useApplyNowStore = defineStore('applyNow', {
             if (formData.reasonForLeaving) dataToSend.append('reasonForLeaving', formData.reasonForLeaving);
             if (formData.expectedSalary) dataToSend.append('expectedSalary', String(formData.expectedSalary));
 
-             if (formData.cvFile) {
-               const file = Array.isArray(formData.cvFile)
-                 ? formData.cvFile[0]
-                 : formData.cvFile;
+            if (formData.cvFile) {
+              const file = Array.isArray(formData.cvFile)
+                ? formData.cvFile[0]
+                : formData.cvFile;
 
-               if (file instanceof File) {
-                 dataToSend.append('cvFile', file, file.name);
-               } else {
-                 console.warn('cvFile is not a valid File');
-               }
-             }
-
-          if (formData.ktpFile) {
-            const file = Array.isArray(formData.ktpFile)
-              ? formData.ktpFile[0]
-              : formData.ktpFile;
-
-            if (file instanceof File) {
-              dataToSend.append('ktpFile',file, file.name);
-            } else {
-              console.warn('cvFile is not a valid File');
+              if (file instanceof File) {
+                dataToSend.append('cvFile', file, file.name);
+              } else {
+                console.warn('cvFile is not a valid File');
+              }
             }
-          }
 
-          if (formData.npwpFile) {
-            const file = Array.isArray(formData.npwpFile)
-              ? formData.npwpFile[0]
-              : formData.npwpFile;
+            if (formData.ktpFile) {
+              const file = Array.isArray(formData.ktpFile)
+                ? formData.ktpFile[0]
+                : formData.ktpFile;
 
-            if (file instanceof File) {
-              dataToSend.append('npwpFile', file, file.name);
-            } else {
-              console.warn('cvFile is not a valid File');
+              if (file instanceof File) {
+                dataToSend.append('ktpFile',file, file.name);
+              } else {
+                console.warn('cvFile is not a valid File');
+              }
             }
-          }
-           if (positionId) {
+
+            if (formData.npwpFile) {
+              const file = Array.isArray(formData.npwpFile)
+                ? formData.npwpFile[0]
+                : formData.npwpFile;
+
+              if (file instanceof File) {
+                dataToSend.append('npwpFile', file, file.name);
+              } else {
+                console.warn('cvFile is not a valid File');
+              }
+            }
+            
+            if (positionId) {
                 dataToSend.append('positionId', String(positionId));
             }
             for (const pair of dataToSend.entries()) {

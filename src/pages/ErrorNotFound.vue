@@ -1,21 +1,16 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <div class="fullscreen bg-white text-white text-center q-pa-md flex flex-center">
     <div>
-      <div style="font-size: 30vh">
-        404
-      </div>
 
-      <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
+      <div class="q-mt-xl gambar">
+        <q-img src="/images/Frame.svg" alt="Error 404"/>
       </div>
 
       <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
+        class="q-mt-xl button-home"
         unelevated
         to="/"
-        label="Go Home"
+        label="Kembali ke Beranda"
         no-caps
       />
     </div>
@@ -23,5 +18,30 @@
 </template>
 
 <script setup lang="ts">
-//
+import { defineComponent } from 'vue';
+
+defineComponent({
+  name: 'ErrorNotFound'
+});
 </script>
+
+<style scoped>
+  .button-home {
+    background-color: #CC2E29 ;
+    width: 200px;
+    height: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+  }
+  .button-home:hover {
+    background-color: #FFD400;
+    color: #CC2E29;
+    transition: 0.3s ease;
+  }
+  .gambar {
+    display: flex;
+    justify-content: center;
+    width: 500px;
+  }
+</style>

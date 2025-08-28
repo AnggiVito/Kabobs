@@ -1,28 +1,24 @@
 <template>
     <q-page class="q-pa-md order-page">
         <div class="q-mt-xl text-center">
-            <h1 class="text-h5 text-dark-title">Lapar? Saatnya Nikmati Kabobs!</h1>
+            <h1 class="text-h5 text-dark-title">{{ orderStore.headerTitle }}</h1>
         </div>
         <div class="promo-section q-mt-lg q-mx-auto row items-center justify-center q-col-gutter-lg">
             <div class="col-xs-12 col-md-6 text-content">
-                <p class="text-subtitle text-promo-desc">
-                    Pesan sekarang dan rasakan kelezatan daging panggang berkualitas, dibalut dengan cita rasa khas Kabobs yang tiada duanya.
-                </p>
-                <p class="text-subtitle text-promo-desc q-mt-sm">
-                    Cepat, praktis, dan dijamin bikin nagih!
-                </p>
+                <p class="text-subtitle text-promo-desc">{{ orderStore.headerDesc1 }}</p>
+                <p class="text-subtitle text-promo-desc q-mt-sm">{{ orderStore.headerDesc2 }}</p>
             </div>
             <div class="col-xs-12 col-md-6 image-content">
-                <q-img src="images/OrderNowVector.png" alt="Kabobs Delivery" class="delivery-image" />
+                <q-img :src="orderStore.headerImage" alt="Kabobs Delivery" class="delivery-image" />
             </div>
         </div>
 
         <div class="q-mt-xl text-center">
-            <h2 class="text-h5 text-dark-title">Pesan Kabobs Favoritmu di Sini!</h2>
+            <h2 class="text-h5 text-dark-title">{{ orderStore.sectionTitle }}</h2>
         </div>
         <div class="order-options q-mt-lg row items-start justify-center q-col-gutter-md">
             <div
-                v-for="(option, index) in orderOptions"
+                v-for="(option, index) in orderStore.orderOptions"
                 :key="index"
                 class="col-xs-6 col-sm-6 col-md-3 column items-center"
             >
@@ -45,44 +41,20 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, type Ref } from 'vue';
     import DownloadAppLayout from 'src/layouts/DownloadAppLayout.vue';
     import FooterLayout from 'src/layouts/FooterLayout.vue';
+    import { useOrderStore } from 'src/stores/OrderStore';
+    import { onMounted } from 'vue';
 
-    interface OrderOption {
-        name: string;
-        image: string;
-        url: string;
-        customClass?: string;
-    }
-
-    const orderOptions: Ref<OrderOption[]> = ref([
-        {
-            name: 'Website Kabobs',
-            image: 'images/order/OrderKabobs.png',
-            url: 'https://order.kabobs.id/',
-            customClass: 'order-icon-kabobs',
-        },
-        {
-            name: 'GrabFood',
-            image: 'images/order/Grabfood.png',
-            url: 'https://food.grab.com/id/id/restaurants?search=kabobs&lng=id&support-deeplink=true&searchParameter=kabobs',
-        },
-        {
-            name: 'GoFood',
-            image: 'images/order/Gofood.png',
-            url: 'https://gofood.co.id/en/search?q=kabobs',
-        },
-        {
-            name: 'ShopeeFood',
-            image: 'images/order/Shopeefood.png',
-            url: 'https://shopee.co.id/shopeefood',
-        },
-    ]);
+    const orderStore = useOrderStore();
 
     const openOrderLink = (url: string) => {
-    window.open(url, '_blank');
+        window.open(url, '_blank');
     };
+
+    onMounted(async () => {
+        await orderStore.fetchOrderPageData();
+    });
 </script>
 
 <style scoped>

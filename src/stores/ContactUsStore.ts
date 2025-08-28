@@ -16,32 +16,32 @@ interface ContactUsState {
     pageSubtitle: string;
     contactInfoHeading: string;
     contactInfoDescription: string;
-    phoneNumber: string;
-    emailAddress: string;
-    addressLine: string;
+    phone: string;
+    email: string;
+    address: string;
     instagramUrl: string;
     facebookUrl: string;
     tiktokUrl: string;
     messageCategories: Array<{ label: string; value: string }>;
     form: ContactForm;
     isSubmitted: boolean;
-    successImageSrc: string;
+    successImage: string;
     isLoading: boolean;
     error: string | null;
 }
 
 export const useContactUsStore = defineStore('contactUs', {
     state: (): ContactUsState => ({
-        pageTitle: 'Hubungi Kami',
-        pageSubtitle: 'Punya pertanyaan atau komentar? Tulis saja pesan kepada kami!',
-        contactInfoHeading: 'Informasi Kontak',
-        contactInfoDescription: 'Jangan ragu untuk menghubungi kami untuk informasi lebih lanjut, kerja sama bisnis, atau pertanyaan seputar produk dan layanan kami. Tim kami siap membantu Anda dengan sepenuh hati.',
-        phoneNumber: '(62)811-1789-9000',
-        emailAddress: 'marketing@kabobs.id',
-        addressLine: 'Jl. Ibrahim Adjie No.372a, Binong, Kec. Batununggal, Kota Bandung, Jawa Barat 40275',
-        instagramUrl: 'https://instagram.com/kabobs.id',
-        facebookUrl: 'https://facebook.com/kabobs.id',
-        tiktokUrl: 'https://tiktok.com/@kabobs.id',
+        pageTitle: '',
+        pageSubtitle: '',
+        contactInfoHeading: '',
+        contactInfoDescription: '',
+        phone: '',
+        email: '',
+        address: '',
+        instagramUrl: '',
+        facebookUrl: '',
+        tiktokUrl: '',
         messageCategories: [
             { label: 'Pertanyaan Umum', value: 'umum' },
             { label: 'Komplain', value: 'komplain' },
@@ -56,7 +56,7 @@ export const useContactUsStore = defineStore('contactUs', {
             message: '',
         },
         isSubmitted: false,
-        successImageSrc: '/images/Success.png',
+        successImage: '',
         isLoading: false,
         error: null,
     }),
@@ -66,21 +66,76 @@ export const useContactUsStore = defineStore('contactUs', {
         getPageSubtitle: (state) => state.pageSubtitle,
         getContactInfoHeading: (state) => state.contactInfoHeading,
         getContactInfoDescription: (state) => state.contactInfoDescription,
-        getPhoneNumber: (state) => state.phoneNumber,
-        getEmailAddress: (state) => state.emailAddress,
-        getAddressLine: (state) => state.addressLine,
+        getPhone: (state) => state.phone,
+        getemail: (state) => state.email,
+        getAddress: (state) => state.address,
         getInstagramUrl: (state) => state.instagramUrl,
         getFacebookUrl: (state) => state.facebookUrl,
         getTiktokUrl: (state) => state.tiktokUrl,
         getMessageCategories: (state) => state.messageCategories,
         getForm: (state) => state.form,
         getIsSubmitted: (state) => state.isSubmitted,
-        getSuccessImageSrc: (state) => state.successImageSrc,
+        getSuccessImage: (state) => state.successImage,
         getIsLoading: (state) => state.isLoading,
         getError: (state) => state.error,
     },
 
     actions: {
+        async fetchPageData() {
+            if (this.isLoading) return;
+            this.isLoading = true;
+            this.error = null;
+
+            try {
+                const response = await baseApi.get<ContactUsState>('/contact-settings');
+                const data = response.data;
+
+                this.pageTitle = data.pageTitle || '';
+                this.pageSubtitle = data.pageSubtitle || '';
+                this.contactInfoHeading = data.contactInfoHeading || '';
+                this.contactInfoDescription = data.contactInfoDescription || '';
+                this.phone = data.phone || '';
+                this.email = data.email || '';
+                this.address = data.address || '';
+                this.successImage = data.successImage ? `http://localhost:3333/${data.successImage}` : '';
+
+            } catch (err) {
+                if (err instanceof AxiosError) {
+                    this.error = `Gagal mengambil data halaman: ${err.response?.data?.message || err.message}`;
+                } else {
+                    this.error = 'Gagal mengambil data halaman: Terjadi kesalahan tidak dikenal.';
+                }
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async fetchSocialMediaLinks() {
+            if (this.isLoading) return;
+            this.isLoading = true;
+            this.error = null;
+
+            try {
+                const response = await baseApi.get('/footer-settings');
+                const data = response.data;
+
+                if (data.socialMediaLinks && Array.isArray(data.socialMediaLinks)) {
+                    this.instagramUrl = data.socialMediaLinks.find((link: { name: string; url: string }) => link.name.toLowerCase() === 'instagram')?.url || '';
+                    this.facebookUrl = data.socialMediaLinks.find((link: { name: string; url: string }) => link.name.toLowerCase() === 'facebook')?.url || '';
+                    this.tiktokUrl = data.socialMediaLinks.find((link: { name: string; url: string }) => link.name.toLowerCase() === 'tiktok')?.url || '';
+                }
+
+            } catch (err) {
+                if (err instanceof AxiosError) {
+                    this.error = `Gagal mengambil data halaman: ${err.response?.data?.message || err.message}`;
+                } else {
+                    this.error = 'Gagal mengambil data halaman: Terjadi kesalahan tidak dikenal.';
+                }
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
         updateFormField<T extends keyof ContactForm>(field: T, value: ContactForm[T]) {
             this.form[field] = value;
         },

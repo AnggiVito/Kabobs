@@ -20,7 +20,21 @@ interface Posisi {
     dbUpdatedAt: string;
 }
 
+interface KarierSettings {
+    headerTitle: string | null;
+    headerDesc1: string | null;
+    headerDesc2: string | null;
+    headerImage: string | null;
+    sectionTitle: string | null;
+}
+
 interface KarierState {
+    headerTitle: string;
+    headerDesc1: string;
+    headerDesc2: string;
+    headerImage: string;
+    sectionTitle: string;
+
     lokasiFilter: string;
     tipeFilter: string;
     keywordSearch: string;
@@ -38,6 +52,11 @@ interface KarierState {
 
 export const useKarierStore = defineStore('karier', {
     state: (): KarierState => ({
+        headerTitle: '',
+        headerDesc1: '',
+        headerDesc2: '',
+        headerImage: '',
+        sectionTitle: '',
         lokasiFilter: 'Semua Lokasi',
         tipeFilter: 'Semua Tipe',
         keywordSearch: '',
@@ -54,9 +73,12 @@ export const useKarierStore = defineStore('karier', {
     }),
 
     getters: {
-        filteredPosisi: (state) => {
-            return state.allPosisi;
-        },
+        getHeaderTitle: (state) => state.headerTitle,
+        getHeaderDesc1: (state) => state.headerDesc1,
+        getHeaderDesc2: (state) => state.headerDesc2,
+        getHeaderImage: (state) => state.headerImage,
+        getSectionTitle: (state) => state.sectionTitle,
+        filteredPosisi: (state) => state.allPosisi,
     },
 
     actions: {
@@ -77,6 +99,15 @@ export const useKarierStore = defineStore('karier', {
             this.isLoading = true;
             this.error = null;
             try {
+                const settingsResponse = await baseApi.get<KarierSettings>('karier-settings');
+                const settings = settingsResponse.data;
+                
+                this.headerTitle = settings.headerTitle || '';
+                this.headerDesc1 = settings.headerDesc1 || '';
+                this.headerDesc2 = settings.headerDesc2 || '';
+                this.headerImage = settings.headerImage ? `http://localhost:3333/${settings.headerImage}` : '';
+                this.sectionTitle = settings.sectionTitle || '';
+
                 const response = await baseApi.get<Posisi[]>('kariers', {
                     params: {
                         lokasi: this.lokasiFilter === 'Semua Lokasi' ? undefined : this.lokasiFilter,

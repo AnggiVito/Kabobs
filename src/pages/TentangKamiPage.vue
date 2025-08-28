@@ -55,8 +55,13 @@
     import DownloadAppLayout from 'layouts/DownloadAppLayout.vue';
     import FooterLayout from 'src/layouts/FooterLayout.vue';
     import { useAboutUsStore } from 'src/stores/TentangKamiStore';
+    import { onMounted } from 'vue';
 
     const aboutUsStore = useAboutUsStore();
+
+    onMounted(() => {
+        void aboutUsStore.fetchAboutUsData();
+    });
 </script>
 
 <style scoped>

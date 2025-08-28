@@ -1,4 +1,17 @@
 import { defineStore } from 'pinia';
+import { baseApi } from 'boot/axios';
+
+interface AboutUsData {
+    storeCount: string;
+    storeDescription: string;
+    ratingTitle: string;
+    ratingDescription: string;
+    aboutUsTitle: string;
+    aboutUsBody1: string;
+    aboutUsBody2: string;
+    imgUtamaSrc: string;
+    imgSosmed1Src: string;
+}
 
 interface AboutUsState {
     storeCount: string;
@@ -14,15 +27,15 @@ interface AboutUsState {
 
 export const useAboutUsStore = defineStore('aboutUs', {
     state: (): AboutUsState => ({
-        storeCount: '100+',
-        storeDescription: 'Saat ini mengoperasikan 100 lebih toko dan akan bertambah lagi di masa mendatang.',
-        ratingTitle: 'Rating Tertinggi!',
-        ratingDescription: 'Rating tertinggi berkat kualitas rasa dan layanan yang konsisten.',
-        aboutUsTitle: 'TENTANG KAMI',
-        aboutUsBody1: '<strong>KABOBS - Premium Kebab</strong>, merupakan perusahaan makanan yang berdiri di Bandung. <strong>\'Premium\'</strong> bukan hanya sekedar nama, karena perusahaan ini bertujuan untuk memberikan yang terbaik, baik dari segi rasa maupun pelayanan.',
-        aboutUsBody2: 'Sejak toko pertamanya diluncurkan pada tahun 2016, <strong>KABOBS</strong> telah berevolusi dan tumbuh, memperluas tokonya ke banyak lokasi strategis, dan menyediakan kebab segar bagi pelanggan yang kemudian menjadi kebab favorit mereka di Bandung.',
-        imgUtamaSrc: '/images/Sosmed2.png',
-        imgSosmed1Src: '/images/Sosmed1.png',
+        storeCount: '',
+        storeDescription: '',
+        ratingTitle: '',
+        ratingDescription: '',
+        aboutUsTitle: '',
+        aboutUsBody1: '',
+        aboutUsBody2: '',
+        imgUtamaSrc: '',
+        imgSosmed1Src: '',
     }),
 
     getters: {
@@ -38,5 +51,26 @@ export const useAboutUsStore = defineStore('aboutUs', {
     },
 
     actions: {
+
+        async fetchAboutUsData() {
+            try {
+                const response = await baseApi.get<AboutUsData>('/tentang-kamis'); 
+                const data = response.data;
+
+                this.storeCount = data.storeCount;
+                this.storeDescription = data.storeDescription;
+                this.ratingTitle = data.ratingTitle;
+                this.ratingDescription = data.ratingDescription;
+                this.aboutUsTitle = data.aboutUsTitle;
+                this.aboutUsBody1 = data.aboutUsBody1;
+                this.aboutUsBody2 = data.aboutUsBody2;
+
+                this.imgUtamaSrc = `http://localhost:3333/${data.imgUtamaSrc}`;
+                this.imgSosmed1Src = `http://localhost:3333/${data.imgSosmed1Src}`;
+
+            } catch (error) {
+                console.error('Gagal mengambil data Tentang Kami:', error);
+            }
+        },
     },
 });

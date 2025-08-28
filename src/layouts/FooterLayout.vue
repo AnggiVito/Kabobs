@@ -68,8 +68,12 @@
 <script setup lang="ts">
     import { useFooterStore } from 'src/stores/FooterStore';
     import FooterCopyright from 'src/components/FooterCopyright.vue';
+    import { onMounted } from 'vue';
 
     const footerStore = useFooterStore();
+    onMounted(() => {
+        void footerStore.fetchFooterData();
+    });
 </script>
 
 <style scoped>

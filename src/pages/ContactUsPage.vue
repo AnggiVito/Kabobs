@@ -17,16 +17,16 @@
                         <div class="info-section">
                             <div class="info-item">
                                 <q-icon name="call" />
-                                <span>{{ contactUsStore.getPhoneNumber }}</span>
+                                <span>{{ contactUsStore.getPhone }}</span>
                             </div>
                             <div class="info-item">
                                 <q-icon name="email" />
-                                <span>{{ contactUsStore.getEmailAddress }}</span>
+                                <span>{{ contactUsStore.getemail }}</span>
                             </div>
                             <div class="info-item">
                                 <q-icon name="place" />
                                 <span>
-                                    {{ contactUsStore.getAddressLine }}<br />
+                                    {{ contactUsStore.getAddress }}<br />
                                 </span>
                             </div>
                         </div>
@@ -154,7 +154,7 @@
                     </div>
 
                     <div v-else class="q-pa-xl flex flex-center column text-center">
-                        <q-img :src="contactUsStore.getSuccessImageSrc" class="after" />
+                        <q-img :src="contactUsStore.getSuccessImage" class="after" />
                         <div class="text-h6 q-mt-md">Pesanmu akan segera diproses dan kami akan segera menghubungimu!</div>
                         <q-btn
                             label="Kembali"
@@ -209,6 +209,11 @@
             });
         }
     }
+
+    onMounted(() => {
+        void contactUsStore.fetchPageData();
+        void contactUsStore.fetchSocialMediaLinks();
+    });
 </script>
 
 <style scoped>

@@ -7,10 +7,10 @@
         <div class="menu-scroll q-mt-lg">
             <div class="scroll-container">
                 <q-img
-                v-for="(image, index) in homeStore.getMenuCards"
-                :key="index"
-                :src="image"
-                class="menu-card"
+                    v-for="(image, index) in homeStore.getMenuCards"
+                    :key="index"
+                    :src="image.fullImageUrl"
+                    class="menu-card"
                 />
             </div>
         </div>
@@ -29,7 +29,7 @@
                     <q-img
                         v-for="(image, index) in homeStore.getPenawaranCards"
                         :key="index"
-                        :src="image"
+                        :src="image.fullImageUrl"
                         class="penawaran-card"
                     />
                 </div>
@@ -145,7 +145,7 @@
                     <q-img
                         v-for="(img, index) in homeStore.getKStarsImages"
                         :key="index"
-                        :src="img"
+                        :src="img.imageUrl"
                         class="k-stars-img"
                         :class="{
                             active: index === kStarsCurrentIndex,
@@ -180,14 +180,14 @@
         >
             <div ref="scrollTrack" class="gallery-track">
                 <div v-for="(image, i) in homeStore.getGalleryImages" :key="i" class="gallery-item">
-                    <img :src="image" alt="" />
+                    <img :src="image.fullImageUrl" alt="" />
                 </div>
                 <div
                     v-for="(image, i) in homeStore.getGalleryImages"
                     :key="`dup-${i}`"
                     class="gallery-item"
                 >
-                    <img :src="image" alt="" />
+                    <img :src="image.fullImageUrl" alt="" />
                 </div>
             </div>
 
@@ -318,6 +318,7 @@
     }
 
     onMounted(() => {
+        void homeStore.fetchHomeData();
         setInitialKStarsImageOpacity();
 
         if (scrollTrack.value) {

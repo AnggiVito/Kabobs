@@ -1,15 +1,37 @@
 import { defineStore } from 'pinia';
+import { baseApi } from 'boot/axios';
+import { AxiosError } from 'axios';
+
+interface HomeItem {
+  id: number;
+  itemType: 'MenuFav' | 'Penawaran' | 'Gallery' | 'kStar' | 'SosmedIcon' | 'InstagramPost';
+  imageUrl: string;
+  title: string | null;
+  linkUrl: string | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+interface DisplayHomeItem extends HomeItem {
+  fullImageUrl: string;
+}
+
+interface HomeSetting {
+  id: number;
+  settingKey: string;
+  settingValue: string | null;
+}
 
 interface HomeState {
   heroImage: string;
   menuFavoritTitle: string;
-  menuCards: string[];
+  menuCards: DisplayHomeItem[];
   lihatSemuaMenuLabel: string;
   lihatSemuaMenuRoute: string;
 
   penawaranSpesialTitle: string;
   penawaranFixedImage: string;
-  penawaranCards: string[];
+  penawaranCards: DisplayHomeItem[];
   lihatSemuaPromoLabel: string;
   lihatSemuaPromoRoute: string;
 
@@ -38,11 +60,11 @@ interface HomeState {
   kebabMakerImageBase: string;
   kebabMakerImageOverlay: string;
 
-  kStarsImages: string[];
+  kStarsImages: DisplayHomeItem[];
   kStarsOverlayImage: string;
 
   socialMediaTitle: string;
-  galleryImages: string[];
+  galleryImages: DisplayHomeItem[];
   socialMediaOverlayText: string;
   socialMediaIcons: { name: string; icon: string; url: string }[];
   instagramPosts: string[];
@@ -52,6 +74,9 @@ interface HomeState {
   isCaraOrderHover: boolean;
   isKebabMakerHover: boolean;
   
+  isLoading: boolean;
+  error: string | null;
+  
   autoScrollGalleryOverlayVisible: boolean;
   autoScrollAnimationId: number | undefined;
   galleryPos: number;
@@ -60,80 +85,50 @@ interface HomeState {
 
 export const useHomeStore = defineStore('home', {
   state: (): HomeState => ({
-    heroImage: '/images/HomeKebab.png',
-    menuFavoritTitle: 'Menu Favorit',
-    menuCards: [
-      '/images/Thumbnail1.png',
-      '/images/Thumbnail2.png',
-      '/images/Thumbnail3.png',
-      '/images/Thumbnail4.png',
-      '/images/Thumbnail5.png',
-      '/images/Thumbnail6.png',
-    ],
+    heroImage: '',
+    menuFavoritTitle: '',
+    menuCards: [],
     lihatSemuaMenuLabel: 'Lihat Semua',
     lihatSemuaMenuRoute: '/Menu',
 
-    penawaranSpesialTitle: 'Penawaran Spesial',
-    penawaranFixedImage: '/images/Penawaran1.png',
-    penawaranCards: [
-      '/images/Penawaran2.png',
-      '/images/Penawaran3.png',
-      '/images/Penawaran4.png',
-    ],
+    penawaranSpesialTitle: '',
+    penawaranFixedImage: '',
+    penawaranCards: [],
     lihatSemuaPromoLabel: 'Lihat Semua',
     lihatSemuaPromoRoute: '/Promo',
 
-    startOrderText: 'Mau Pesan Kabobs Sekarang?',
+    startOrderText: '',
     startOrderButtonLabel: 'Mulai Pesan',
     startOrderButtonRoute: '/order-now',
 
-    menuKiriImageBase: '/images/KebabMenu.png',
-    menuKiriImageHover: '/images/KebabMenuHover.png',
+    menuKiriImageBase: '',
+    menuKiriImageHover: '',
     menuKiriTextLihat: 'LIHAT',
     menuKiriTextMenu: 'MENU',
     menuKiriRoute: '/Menu',
 
-    outletKananImage: '/images/OutletHome.png',
+    outletKananImage: '',
     outletKananTextTemukan: 'Temukan',
     outletKananTextKabobs: 'Kabobs',
     outletKananTextCari: 'Cari Kabobs terdekat',
     outletKananRoute: '/Promo',
 
-    caraOrderImageBase: '/images/CaraOrder1.png',
-    caraOrderImageHover: '/images/CaraOrder2.png',
+    caraOrderImageBase: '',
+    caraOrderImageHover: '',
     caraOrderTextCara: 'CARA',
     caraOrderTextOrder: 'ORDER',
     caraOrderRoute: '/Cara-Order',
 
-    kebabMakerImageBase: '/images/KebabMaker.png',
-    kebabMakerImageOverlay: '/images/TextKebabMaker.png',
+    kebabMakerImageBase: '',
+    kebabMakerImageOverlay: '',
 
-    kStarsImages: [
-      '/images/KStars1.png',
-      '/images/KStars2.png',
-      '/images/KStars3.png',
-      '/images/KStars4.png',
-      '/images/KStars5.png',
-    ],
+    kStarsImages: [],
     kStarsOverlayImage: '/images/KStars.png',
 
     socialMediaTitle: 'Kabobs Social Media',
-    galleryImages: [
-      '/images/Sosmed1.png',
-      '/images/Sosmed2.png',
-      '/images/Sosmed3.png',
-      '/images/Sosmed4.png',
-      '/images/Sosmed5.png',
-      '/images/Sosmed6.png',
-      '/images/Sosmed7.png',
-      '/images/Sosmed8.png',
-    ],
+    galleryImages: [],
     socialMediaOverlayText: 'Follow Kabobs.id',
-    socialMediaIcons: [
-      { name: 'Facebook', icon: '/icons/Facebook.png', url: 'https://www.facebook.com/kabobs.id' },
-      { name: 'Instagram', icon: '/icons/Instagram.png', url: 'https://www.instagram.com/kabobs.id/' },
-      { name: 'TikTok', icon: '/icons/TikTok.png', url: 'https://www.tiktok.com/@kabobs.id' },
-    ],
+    socialMediaIcons: [],
     instagramPosts: [
       'https://www.instagram.com/reel/DEWrojpS4v3/',
       'https://www.instagram.com/reel/DL1z_LAyBs5/',
@@ -145,6 +140,9 @@ export const useHomeStore = defineStore('home', {
     isPromoHover: false,
     isCaraOrderHover: false,
     isKebabMakerHover: false,
+    
+    isLoading: false,
+    error: null,
     
     autoScrollGalleryOverlayVisible: false,
     autoScrollAnimationId: undefined,
@@ -158,48 +156,39 @@ export const useHomeStore = defineStore('home', {
     getMenuCards: (state) => state.menuCards,
     getLihatSemuaMenuLabel: (state) => state.lihatSemuaMenuLabel,
     getLihatSemuaMenuRoute: (state) => state.lihatSemuaMenuRoute,
-
     getPenawaranSpesialTitle: (state) => state.penawaranSpesialTitle,
     getPenawaranFixedImage: (state) => state.penawaranFixedImage,
     getPenawaranCards: (state) => state.penawaranCards,
     getLihatSemuaPromoLabel: (state) => state.lihatSemuaPromoLabel,
     getLihatSemuaPromoRoute: (state) => state.lihatSemuaPromoRoute,
-
     getStartOrderText: (state) => state.startOrderText,
     getStartOrderButtonLabel: (state) => state.startOrderButtonLabel,
     getStartOrderButtonRoute: (state) => state.startOrderButtonRoute,
-
     getMenuKiriImageBase: (state) => state.menuKiriImageBase,
     getMenuKiriImageHover: (state) => state.menuKiriImageHover,
     getMenuKiriTextLihat: (state) => state.menuKiriTextLihat,
     getMenuKiriTextMenu: (state) => state.menuKiriTextMenu,
     getMenuKiriRoute: (state) => state.menuKiriRoute,
-
     getOutletKananImage: (state) => state.outletKananImage,
     getOutletKananTextTemukan: (state) => state.outletKananTextTemukan,
     getOutletKananTextKabobs: (state) => state.outletKananTextKabobs,
     getOutletKananTextCari: (state) => state.outletKananTextCari,
     getOutletKananRoute: (state) => state.outletKananRoute,
-
     getCaraOrderImageBase: (state) => state.caraOrderImageBase,
     getCaraOrderImageHover: (state) => state.caraOrderImageHover,
     getCaraOrderTextCara: (state) => state.caraOrderTextCara,
     getCaraOrderTextOrder: (state) => state.caraOrderTextOrder,
     getCaraOrderRoute: (state) => state.caraOrderRoute,
-
     getKebabMakerImageBase: (state) => state.kebabMakerImageBase,
     getKebabMakerImageOverlay: (state) => state.kebabMakerImageOverlay,
-
     getKStarsImages: (state) => state.kStarsImages,
     getKStarsOverlayImage: (state) => state.kStarsOverlayImage,
-
     getSocialMediaTitle: (state) => state.socialMediaTitle,
     getGalleryImages: (state) => state.galleryImages,
     getSocialMediaOverlayText: (state) => state.socialMediaOverlayText,
     getSocialMediaIcons: (state) => state.socialMediaIcons,
     getInstagramPosts: (state) => state.instagramPosts,
     getAutoScrollGalleryOverlayVisible: (state) => state.autoScrollGalleryOverlayVisible,
-
     getIsMenuHover: (state) => state.isMenuHover,
     getIsPromoHover: (state) => state.isPromoHover,
     getIsCaraOrderHover: (state) => state.isCaraOrderHover,
@@ -207,6 +196,66 @@ export const useHomeStore = defineStore('home', {
   },
 
   actions: {
+    async fetchHomeData() {
+      this.isLoading = true;
+      this.error = null;
+      try {
+        const settingsResponse = await baseApi.get<HomeSetting[]>('home-settings');
+        const settingsData = settingsResponse.data;
+        const findSetting = (key: string) => settingsData.find(s => s.settingKey === key)?.settingValue || '';
+
+        this.heroImage = `http://localhost:3333/${findSetting('heroImage')}`;
+        this.menuFavoritTitle = findSetting('menuFavoritTitle');
+        this.penawaranSpesialTitle = findSetting('penawaranSpesialTitle');
+        this.penawaranFixedImage = `http://localhost:3333/${findSetting('penawaranFixedImage')}`;
+        this.startOrderText = findSetting('startOrderText');
+        this.menuKiriImageBase = `http://localhost:3333/${findSetting('menuKiriImageBase')}`;
+        this.menuKiriImageHover = `http://localhost:3333/${findSetting('menuKiriImageHover')}`;
+        this.outletKananImage = `http://localhost:3333/${findSetting('outletKananImage')}`;
+        this.caraOrderImageBase = `http://localhost:3333/${findSetting('caraOrderImageBase')}`;
+        this.caraOrderImageHover = `http://localhost:3333/${findSetting('caraOrderImageHover')}`;
+        this.kebabMakerImageBase = `http://localhost:3333/${findSetting('kebabMakerImageBase')}`;
+        this.kebabMakerImageOverlay = `http://localhost:3333/${findSetting('kebabMakerImageOverlay')}`;
+
+        const menuResponse = await baseApi.get<HomeItem[]>('home-items', { params: { item_type: 'MenuFav' } });
+        const penawaranResponse = await baseApi.get<HomeItem[]>('home-items', { params: { item_type: 'Penawaran' } });
+        const galleryResponse = await baseApi.get<HomeItem[]>('home-items', { params: { item_type: 'Gallery' } });
+        const kStarResponse = await baseApi.get<HomeItem[]>('home-items', { params: { item_type: 'kStar' } });
+        const socialMediaResponse = await baseApi.get<HomeItem[]>('home-items', { params: { item_type: 'SosmedIcon' } });
+
+        this.menuCards = menuResponse.data.map(item => ({
+          ...item,
+          fullImageUrl: `http://localhost:3333/${item.imageUrl}`
+        }));
+        this.penawaranCards = penawaranResponse.data.map(item => ({
+          ...item,
+          fullImageUrl: `http://localhost:3333/${item.imageUrl}`
+        }));
+        this.galleryImages = galleryResponse.data.slice().map(item => ({
+          ...item,
+          fullImageUrl: item.imageUrl ? `http://localhost:3333/${item.imageUrl}` : '',
+        }));
+        this.kStarsImages = kStarResponse.data.map(item => ({
+          ...item,
+          fullImageUrl: `http://localhost:3333/${item.imageUrl}`
+        }));
+        this.socialMediaIcons = socialMediaResponse.data.map(item => ({
+          name: item.title || '',
+          icon: `http://localhost:3333/${item.imageUrl}`,
+          url: item.linkUrl || ''
+        }));
+
+      } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+          this.error = `Gagal mengambil data home: ${err.response?.data?.message || err.message}`;
+        } else {
+          this.error = 'Gagal mengambil data home: Terjadi kesalahan tidak diketahui.';
+        }
+        console.error('Error fetching home data:', err);
+      } finally {
+        this.isLoading = false;
+      }
+    },
     setMenuHover(value: boolean) {
       this.isMenuHover = value;
     },
@@ -222,16 +271,10 @@ export const useHomeStore = defineStore('home', {
     setAutoScrollGalleryOverlayVisible(value: boolean) {
       this.autoScrollGalleryOverlayVisible = value;
     },
-
     startAutoScrollAnimation(trackElement: HTMLElement) {
       this.stopAutoScrollAnimation();
       this.galleryPos = 0;
 
-      const items = trackElement.innerHTML;
-      if (trackElement.children.length === this.galleryImages.length) { 
-        trackElement.innerHTML = items + items;
-      }
-      
       const animate = () => {
         this.galleryPos -= this.gallerySpeed;
         const width = trackElement.scrollWidth / 2;
@@ -246,7 +289,6 @@ export const useHomeStore = defineStore('home', {
 
       this.autoScrollAnimationId = requestAnimationFrame(animate);
     },
-
     stopAutoScrollAnimation() {
       if (this.autoScrollAnimationId !== undefined) {
         cancelAnimationFrame(this.autoScrollAnimationId);

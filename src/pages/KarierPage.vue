@@ -4,13 +4,12 @@
       <q-card class="join-kabobs-card">
         <q-card-section class="row no-wrap items-center justify-between full-height">
           <div class="col-xs-12 col-md-6 text-content-wrapper">
-            <h1 class="text-h5 text-dark-title q-mb-md">Bergabunglah Bersama Keluarga Besar Kabobs</h1>
-            <p class="text-body1 text-join-desc q-mt-md">
-              Temukan karier yang penuh semangat dan makna bersama Kabobs! Kami membuka kesempatan bagi Anda untuk menjadi bagian dari tim hebat kami baik di lingkungan kantor sebagai staf profesional maupun di garis depan sebagai crew outlet yang melayani pelanggan dengan sepenuh hati.
-            </p>
-            <p class="text-body1 text-join-desc q-mt-md">
-              Bersama Kabobs, Anda tidak hanya bekerja, tetapi juga tumbuh, berkembang, dan memberi dampak positif bagi banyak orang. Mari wujudkan masa depan cerah bersama kami!
-            </p>
+            <h1 class="text-h5 text-dark-title q-mb-md">{{ karierStore.getHeaderTitle }}</h1>
+            <p class="text-body1 text-join-desc q-mt-md">{{ karierStore.getHeaderDesc1 }}</p>
+            <p class="text-body1 text-join-desc q-mt-md">{{ karierStore.getHeaderDesc2 }}</p>
+          </div>
+          <div class="col-xs-12 col-md-6 image-content-wrapper flex flex-center">
+              <q-img :src="karierStore.getHeaderImage" alt="Join Us" class="join-image-card" />
           </div>
           <div class="col-xs-12 col-md-6 image-content-wrapper flex flex-center">
             <q-img src="images/Sosmed3.png" alt="Join Us" class="join-image-card" />
@@ -20,7 +19,7 @@
     </div>
 
     <div class="q-xl text-center">
-      <h2 class="text-h5 text-dark-title">Posisi yang Terbuka</h2>
+      <h2 class="text-h5 text-dark-title">{{ karierStore.getSectionTitle }}</h2>
     </div>
 
     <div class="search-filter-bar q-mt-lg row q-gutter-md">
@@ -370,6 +369,9 @@
     .join-kabobs-card-wrapper {
       padding: 0 10px;
     }
+    .join-image-card {
+      display: none;
+    }
     .join-kabobs-card {
       min-height: auto;
       margin-bottom: 40px;
@@ -432,6 +434,9 @@
     .text-h5 {
       font-size: 32px;
     }
+    .join-image-card {
+      display: none;
+    }
     .text-body1 {
       font-size: 16px;
     }
@@ -483,6 +488,9 @@
   @media (max-width: 480px) {
     .text-h5 {
       font-size: 28px;
+    }
+    .join-image-card {
+      display: none;
     }
     .text-body1 {
       font-size: 14px;

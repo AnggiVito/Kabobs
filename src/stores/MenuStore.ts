@@ -9,6 +9,10 @@ interface MenuItem {
     category: string;
 }
 
+interface NavbarLinkItem {
+    title: string | null;
+}
+
 interface DisplayMenuItem extends MenuItem {
     fullImageUrl: string;
 }
@@ -26,10 +30,7 @@ interface MenuState {
 export const useMenuStore = defineStore('menu', {
     state: (): MenuState => ({
         pageTitle: 'Menu Kabobs',
-        categoryButtons: [
-            'Semua Menu', 'Kebab', 'Drinks', 'Snacks',
-            'Combobs', 'Fun Set', 'Fun Box', 'Combo Seru', 'Seasonal Menu'
-        ],
+        categoryButtons: [],
         selectedCategory: 'Semua Menu',
         allMenusRaw: [],
         displayMenus: [],
@@ -40,31 +41,22 @@ export const useMenuStore = defineStore('menu', {
     getters: {
         getFilteredMenuGroups: (state) => {
             const filtered: { [key: string]: DisplayMenuItem[] } = {};
-            
-            const itemsToFilter = state.displayMenus;
 
-            const uniqueCategoriesFromData = Array.from(new Set(itemsToFilter.map(item => item.category)));
-            const allDisplayCategories = Array.from(new Set([...state.categoryButtons.filter(btn => btn !== 'Semua Menu'), ...uniqueCategoriesFromData]));
+            const itemsToFilter = state.displayMenus;
             
-            if (state.selectedCategory === 'Semua Menu') {
-                allDisplayCategories.sort().forEach(categoryName => {
-                    filtered[categoryName] = itemsToFilter.filter(item => item.category === categoryName);
-                });
-                state.categoryButtons.filter(btn => btn !== 'Semua Menu' && !filtered[btn]).forEach(categoryName => {
-                    filtered[categoryName] = [];
-                });
-            } else {
-                if (allDisplayCategories.includes(state.selectedCategory)) {
-                    filtered[state.selectedCategory] = itemsToFilter.filter(item => item.category === state.selectedCategory);
-                } else {
-                    filtered[state.selectedCategory] = [];
-                }
-            }
+            const displayCategories = state.selectedCategory === 'Semua Menu'
+                ? state.categoryButtons
+                : [state.selectedCategory];
+
+            displayCategories.forEach(categoryName => {
+                filtered[categoryName] = itemsToFilter.filter(item => item.category === categoryName);
+            });
+            
             return filtered;
         },
 
         getPageTitle: (state) => state.pageTitle,
-        getCategoryButtons: (state) => state.categoryButtons,
+        getCategoryButtons: (state) => ['Semua Menu', ...state.categoryButtons],
         getSelectedCategory: (state) => state.selectedCategory,
     },
 
@@ -74,35 +66,36 @@ export const useMenuStore = defineStore('menu', {
         },
 
         initializeCategoryFromQuery(queryCategory: string | string[] | null | undefined) {
-            let targetCategory: string | null = null;
-            if (typeof queryCategory === 'string') {
-                targetCategory = queryCategory;
-            } else if (Array.isArray(queryCategory) && queryCategory.length > 0 && typeof queryCategory[0] === 'string') {
-                targetCategory = queryCategory[0];
-            }
-
-            if (targetCategory && (this.categoryButtons.includes(targetCategory) || this.allMenusRaw.some(item => item.category === targetCategory))) {
-                this.selectedCategory = targetCategory;
+            const category = Array.isArray(queryCategory) ? queryCategory[0] : queryCategory;
+            
+            if (category && (this.categoryButtons.includes(category) || category === 'Semua Menu')) {
+                this.selectedCategory = category;
             } else {
                 this.selectedCategory = 'Semua Menu';
             }
         },
 
         async fetchMenus() {
+            if (this.isLoading) return;
             this.isLoading = true;
             this.error = null;
             try {
-                const response = await baseApi.get<MenuItem[]>('menus');
-                this.allMenusRaw = response.data;
+                const linkResponse = await baseApi.get<NavbarLinkItem[]>('/navbar-items', {
+                    params: { item_type: 'Link' }
+                });
+                this.categoryButtons = linkResponse.data.map(item => item.title || '');
+
+                const menuResponse = await baseApi.get<MenuItem[]>('menus');
+                this.allMenusRaw = menuResponse.data;
+
                 this.displayMenus = this.allMenusRaw.map(item => ({
                     ...item,
                     fullImageUrl: `http://localhost:3333/${item.image}`
                 }));
+
             } catch (err: unknown) {
                 if (err instanceof AxiosError) {
                     this.error = `Gagal mengambil menu: ${err.response?.data?.message || err.message}`;
-                } else if (err instanceof Error) {
-                    this.error = `Gagal mengambil menu: ${err.message}`;
                 } else {
                     this.error = 'Gagal mengambil menu: Terjadi kesalahan tidak diketahui.';
                 }

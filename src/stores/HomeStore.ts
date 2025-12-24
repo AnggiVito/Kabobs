@@ -73,10 +73,10 @@ interface HomeState {
   isPromoHover: boolean;
   isCaraOrderHover: boolean;
   isKebabMakerHover: boolean;
-  
+
   isLoading: boolean;
   error: string | null;
-  
+
   autoScrollGalleryOverlayVisible: boolean;
   autoScrollAnimationId: number | undefined;
   galleryPos: number;
@@ -140,10 +140,10 @@ export const useHomeStore = defineStore('home', {
     isPromoHover: false,
     isCaraOrderHover: false,
     isKebabMakerHover: false,
-    
+
     isLoading: false,
     error: null,
-    
+
     autoScrollGalleryOverlayVisible: false,
     autoScrollAnimationId: undefined,
     galleryPos: 0,
@@ -204,18 +204,18 @@ export const useHomeStore = defineStore('home', {
         const settingsData = settingsResponse.data;
         const findSetting = (key: string) => settingsData.find(s => s.settingKey === key)?.settingValue || '';
 
-        this.heroImage = `http://localhost:3333/${findSetting('heroImage')}`;
+        this.heroImage = `${import.meta.env.VITE_IMAGE_URL}${findSetting('heroImage')}`;
         this.menuFavoritTitle = findSetting('menuFavoritTitle');
         this.penawaranSpesialTitle = findSetting('penawaranSpesialTitle');
-        this.penawaranFixedImage = `http://localhost:3333/${findSetting('penawaranFixedImage')}`;
+        this.penawaranFixedImage = `${import.meta.env.VITE_IMAGE_URL}${findSetting('penawaranFixedImage')}`;
         this.startOrderText = findSetting('startOrderText');
-        this.menuKiriImageBase = `http://localhost:3333/${findSetting('menuKiriImageBase')}`;
-        this.menuKiriImageHover = `http://localhost:3333/${findSetting('menuKiriImageHover')}`;
-        this.outletKananImage = `http://localhost:3333/${findSetting('outletKananImage')}`;
-        this.caraOrderImageBase = `http://localhost:3333/${findSetting('caraOrderImageBase')}`;
-        this.caraOrderImageHover = `http://localhost:3333/${findSetting('caraOrderImageHover')}`;
-        this.kebabMakerImageBase = `http://localhost:3333/${findSetting('kebabMakerImageBase')}`;
-        this.kebabMakerImageOverlay = `http://localhost:3333/${findSetting('kebabMakerImageOverlay')}`;
+        this.menuKiriImageBase = `${import.meta.env.VITE_IMAGE_URL}${findSetting('menuKiriImageBase')}`;
+        this.menuKiriImageHover = `${import.meta.env.VITE_IMAGE_URL}${findSetting('menuKiriImageHover')}`;
+        this.outletKananImage = `${import.meta.env.VITE_IMAGE_URL}${findSetting('outletKananImage')}`;
+        this.caraOrderImageBase = `${import.meta.env.VITE_IMAGE_URL}${findSetting('caraOrderImageBase')}`;
+        this.caraOrderImageHover = `${import.meta.env.VITE_IMAGE_URL}${findSetting('caraOrderImageHover')}`;
+        this.kebabMakerImageBase = `${import.meta.env.VITE_IMAGE_URL}${findSetting('kebabMakerImageBase')}`;
+        this.kebabMakerImageOverlay = `${import.meta.env.VITE_IMAGE_URL}${findSetting('kebabMakerImageOverlay')}`;
 
         const menuResponse = await baseApi.get<HomeItem[]>('home-items', { params: { item_type: 'MenuFav' } });
         const penawaranResponse = await baseApi.get<HomeItem[]>('home-items', { params: { item_type: 'Penawaran' } });
@@ -225,23 +225,23 @@ export const useHomeStore = defineStore('home', {
 
         this.menuCards = menuResponse.data.map(item => ({
           ...item,
-          fullImageUrl: `http://localhost:3333/${item.imageUrl}`
+          fullImageUrl: `${import.meta.env.VITE_IMAGE_URL}${item.imageUrl}`
         }));
         this.penawaranCards = penawaranResponse.data.map(item => ({
           ...item,
-          fullImageUrl: `http://localhost:3333/${item.imageUrl}`
+          fullImageUrl: `${import.meta.env.VITE_IMAGE_URL}${item.imageUrl}`
         }));
         this.galleryImages = galleryResponse.data.slice().map(item => ({
           ...item,
-          fullImageUrl: item.imageUrl ? `http://localhost:3333/${item.imageUrl}` : '',
+          fullImageUrl: item.imageUrl ? `${import.meta.env.VITE_IMAGE_URL}${item.imageUrl}` : '',
         }));
         this.kStarsImages = kStarResponse.data.map(item => ({
           ...item,
-          fullImageUrl: `http://localhost:3333/${item.imageUrl}`
+          fullImageUrl: `${import.meta.env.VITE_IMAGE_URL}${item.imageUrl}`
         }));
         this.socialMediaIcons = socialMediaResponse.data.map(item => ({
           name: item.title || '',
-          icon: `http://localhost:3333/${item.imageUrl}`,
+          icon: `${import.meta.env.VITE_IMAGE_URL}${item.imageUrl}`,
           url: item.linkUrl || ''
         }));
 

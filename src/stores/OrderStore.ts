@@ -54,18 +54,18 @@ export const useOrderStore = defineStore('order', {
             try {
                 const response = await baseApi.get<OrderSettingsData>('/order-settings');
                 const data = response.data;
-                
+
                 this.headerTitle = data.headerTitle || '';
                 this.headerDesc1 = data.headerDesc1 || '';
                 this.headerDesc2 = data.headerDesc2 || '';
-                this.headerImage = data.headerImage ? `http://localhost:3333/${data.headerImage}` : '';
+                this.headerImage = data.headerImage ? `${import.meta.env.VITE_IMAGE_URL}${data.headerImage}` : '';
                 this.sectionTitle = data.sectionTitle || '';
 
                 if (data.orderOptions && Array.isArray(data.orderOptions)) {
                     this.orderOptions = data.orderOptions.map(option => ({
                         name: option.name || '',
                         url: option.url || '#',
-                        image: option.image ? `http://localhost:3333/${option.image}` : '',
+                        image: option.image ? `${import.meta.env.VITE_IMAGE_URL}${option.image}` : '',
                         customClass: option.name === 'Website Kabobs' ? 'order-icon-kabobs' : 'order-icon'
                     }));
                 }

@@ -54,7 +54,7 @@ export const useAboutUsStore = defineStore('aboutUs', {
 
         async fetchAboutUsData() {
             try {
-                const response = await baseApi.get<AboutUsData>('/tentang-kamis'); 
+                const response = await baseApi.get<AboutUsData>('/tentang-kamis');
                 const data = response.data;
 
                 this.storeCount = data.storeCount;
@@ -65,8 +65,8 @@ export const useAboutUsStore = defineStore('aboutUs', {
                 this.aboutUsBody1 = data.aboutUsBody1;
                 this.aboutUsBody2 = data.aboutUsBody2;
 
-                this.imgUtamaSrc = `http://localhost:3333/${data.imgUtamaSrc}`;
-                this.imgSosmed1Src = `http://localhost:3333/${data.imgSosmed1Src}`;
+                this.imgUtamaSrc = `${import.meta.env.VITE_IMAGE_URL}${data.imgUtamaSrc}`;
+                this.imgSosmed1Src = `${import.meta.env.VITE_IMAGE_URL}${data.imgSosmed1Src}`;
 
             } catch (error) {
                 console.error('Gagal mengambil data Tentang Kami:', error);

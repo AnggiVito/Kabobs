@@ -34,7 +34,7 @@ export const useFooterStore = defineStore('footer', {
         companyEmail: '',
         companyPhone: '',
         signUpText: '',
-        emailInput: '', 
+        emailInput: '',
     }),
 
     getters: {
@@ -55,7 +55,7 @@ export const useFooterStore = defineStore('footer', {
                 const response = await baseApi.get<FooterData>('footer-settings');
                 const data = response.data;
 
-                this.logoImage = data.logoImage ? `http://localhost:3333/${data.logoImage}` : '';
+                this.logoImage = data.logoImage ? `${import.meta.env.VITE_IMAGE_URL}${data.logoImage}` : '';
                 this.companyName = data.companyName || '';
                 this.companyAddress = data.companyAddress || '';
                 this.companyEmail = data.companyEmail || '';
@@ -70,15 +70,15 @@ export const useFooterStore = defineStore('footer', {
         },
 
         setEmailInput(value: string | number | null) {
-            this.emailInput = String(value || ''); 
+            this.emailInput = String(value || '');
         },
-        
+
         async signUpForOrder() {
             if (this.emailInput && this.emailInput.includes('@')) {
                 try {
                     await baseApi.post('/subscriptions', { email: this.emailInput });
                     alert(`Terima kasih telah mendaftar: ${this.emailInput}`);
-                    this.emailInput = ''; 
+                    this.emailInput = '';
                 } catch (error) {
                     console.error("Gagal mendaftar:", error);
                     alert('Gagal mendaftar, silakan coba lagi.');

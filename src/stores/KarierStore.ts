@@ -38,10 +38,10 @@ interface KarierState {
     lokasiFilter: string;
     tipeFilter: string;
     keywordSearch: string;
-    
+
     lokasiOptions: string[];
     tipeOptions: string[];
-    
+
     allPosisi: Posisi[];
     isLoading: boolean;
     error: string | null;
@@ -60,10 +60,10 @@ export const useKarierStore = defineStore('karier', {
         lokasiFilter: 'Semua Lokasi',
         tipeFilter: 'Semua Tipe',
         keywordSearch: '',
-        
+
         lokasiOptions: ['Semua Lokasi'],
         tipeOptions: ['Semua Tipe'],
-        
+
         allPosisi: [],
         isLoading: false,
         error: null,
@@ -84,28 +84,28 @@ export const useKarierStore = defineStore('karier', {
     actions: {
         async setLokasiFilter(value: string) {
             this.lokasiFilter = value;
-            await this.fetchPosisiData(); 
+            await this.fetchPosisiData();
         },
         async setTipeFilter(value: string) {
             this.tipeFilter = value;
-            await this.fetchPosisiData(); 
+            await this.fetchPosisiData();
         },
         async setKeywordSearch(value: string | number | null) {
             this.keywordSearch = typeof value === 'string' ? value : value?.toString() ?? '';
-            await this.fetchPosisiData(); 
+            await this.fetchPosisiData();
         },
-        
+
         async fetchPosisiData() {
             this.isLoading = true;
             this.error = null;
             try {
                 const settingsResponse = await baseApi.get<KarierSettings>('karier-settings');
                 const settings = settingsResponse.data;
-                
+
                 this.headerTitle = settings.headerTitle || '';
                 this.headerDesc1 = settings.headerDesc1 || '';
                 this.headerDesc2 = settings.headerDesc2 || '';
-                this.headerImage = settings.headerImage ? `http://localhost:3333/${settings.headerImage}` : '';
+                this.headerImage = settings.headerImage ? `${import.meta.env.VITE_IMAGE_URL}${settings.headerImage}` : '';
                 this.sectionTitle = settings.sectionTitle || '';
 
                 const response = await baseApi.get<Posisi[]>('kariers', {

@@ -11,9 +11,6 @@
           <div class="col-xs-12 col-md-6 image-content-wrapper flex flex-center">
               <q-img :src="karierStore.getHeaderImage" alt="Join Us" class="join-image-card" />
           </div>
-          <div class="col-xs-12 col-md-6 image-content-wrapper flex flex-center">
-            <q-img src="images/Sosmed3.png" alt="Join Us" class="join-image-card" />
-          </div>
         </q-card-section>
       </q-card>
     </div>
@@ -461,7 +458,7 @@
     .text-content-wrapper {
       padding: 20px;
       text-align: center;
-      order: 1; 
+      order: 1;
     }
     .text-content-wrapper h1 {
       font-size: 16px;
@@ -473,7 +470,7 @@
       text-align: center;
     }
     .image-content-wrapper {
-      order: 2; 
+      order: 2;
       margin-top: 20px;
       width: 100%;
       padding: 0;
@@ -502,7 +499,7 @@
       font-size: 12px;
     }
     .image-content-wrapper {
-      order: 2; 
+      order: 2;
       margin-top: 20px;
       width: 100%;
       padding: 0;

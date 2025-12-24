@@ -3,15 +3,15 @@
     <q-header elevated class="bg-white text-black">
       <q-toolbar class="toolbar-custom">
         <q-btn flat dense round icon="menu" class="q-visible-xs" @click="navbarStore.toggleDrawer()" />
-        
+
         <div class="row items-center q-gutter-lg">
           <a href="/" class="q-visible-xs q-ml-auto">
             <q-img :src="navbarStore.logoImage" style="width: 80px;" />
           </a>
 
-          <div class="row items-center q-gutter-lg q-hidden-xs">
+          <div class="row items-center  q-hidden-xs">
             <div v-for="link in navbarStore.getNavLinks" :key="link.label" class="nav-hover">
-              
+
               <div v-if="link.label === 'Menu'" @click="goToMenu" @mouseenter="handleMenuEnter" @mouseleave="closeMenuDropdownWrapper()">
                 {{ link.label }}
                 <q-icon name="expand_more" size="20px" class="q-ml-xs" />
@@ -74,11 +74,11 @@
                     <q-item-section>Semua Menu</q-item-section>
                 </q-item>
             </q-expansion-item>
-            
+
             <q-item v-for="link in navbarStore.getNavLinks.filter(l => l.label !== 'Menu' && l.label !== 'Tentang Kabobs')" :key="link.label" clickable @click="router.push(link.route)">
                 <q-item-section>{{link.label}}</q-item-section>
             </q-item>
-    
+
             <q-expansion-item label="Tentang Kabobs" expand-separator>
                 <q-item v-for="item in navbarStore.getTentangDropdownItems" :key="item.label" clickable @click="router.push(item.route)">
                     <q-item-section>{{ item.label }}</q-item-section>

@@ -97,7 +97,7 @@ export const useContactUsStore = defineStore('contactUs', {
                 this.phone = data.phone || '';
                 this.email = data.email || '';
                 this.address = data.address || '';
-                this.successImage = data.successImage ? `http://localhost:3333/${data.successImage}` : '';
+                this.successImage = data.successImage ? `${import.meta.env.VITE_IMAGE_URL}${data.successImage}` : '';
 
             } catch (err) {
                 if (err instanceof AxiosError) {

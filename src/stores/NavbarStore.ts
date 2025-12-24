@@ -68,12 +68,12 @@ export const useNavbarStore = defineStore('navbar', {
                 ]);
 
                 this.logoImage = logoResponse.data.length > 0 && logoResponse.data[0]?.imageUrl
-                    ? `http://localhost:3333/${logoResponse.data[0].imageUrl}`
+                    ? `${import.meta.env.VITE_IMAGE_URL}${logoResponse.data[0].imageUrl}`
                     : '';
 
                 this.menuImages = thumbResponse.data
                     .sort((a, b) => a.sortOrder - b.sortOrder)
-                    .map(item => `http://localhost:3333/${item.imageUrl}`);
+                    .map(item => `${import.meta.env.VITE_IMAGE_URL}${item.imageUrl}`);
 
                 this.menuDropdownItems = linkResponse.data
                     .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -91,7 +91,7 @@ export const useNavbarStore = defineStore('navbar', {
                 console.error('Gagal mengambil data navbar:', error);
             }
         },
-        
+
         toggleDrawer() { this.drawer = !this.drawer; },
         setMenuDropdown(value: boolean) {
             this.menuDropdown = value;

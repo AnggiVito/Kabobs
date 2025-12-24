@@ -43,7 +43,7 @@ export const useMenuStore = defineStore('menu', {
             const filtered: { [key: string]: DisplayMenuItem[] } = {};
 
             const itemsToFilter = state.displayMenus;
-            
+
             const displayCategories = state.selectedCategory === 'Semua Menu'
                 ? state.categoryButtons
                 : [state.selectedCategory];
@@ -51,7 +51,7 @@ export const useMenuStore = defineStore('menu', {
             displayCategories.forEach(categoryName => {
                 filtered[categoryName] = itemsToFilter.filter(item => item.category === categoryName);
             });
-            
+
             return filtered;
         },
 
@@ -67,7 +67,7 @@ export const useMenuStore = defineStore('menu', {
 
         initializeCategoryFromQuery(queryCategory: string | string[] | null | undefined) {
             const category = Array.isArray(queryCategory) ? queryCategory[0] : queryCategory;
-            
+
             if (category && (this.categoryButtons.includes(category) || category === 'Semua Menu')) {
                 this.selectedCategory = category;
             } else {
@@ -90,7 +90,7 @@ export const useMenuStore = defineStore('menu', {
 
                 this.displayMenus = this.allMenusRaw.map(item => ({
                     ...item,
-                    fullImageUrl: `http://localhost:3333/${item.image}`
+                    fullImageUrl: `${import.meta.env.VITE_IMAGE_URL}${item.image}`
                 }));
 
             } catch (err: unknown) {
